@@ -1,0 +1,47 @@
+int64[10] test4_forward(int64[10] x){
+    return x
+}
+
+
+int64[10]& test4_forward2(int64[10]& x){
+    return x
+}
+
+
+int64[10]& test4_forward3(int64[10]& x){
+    int64[10]& b
+    b = test4_forward2(x)
+    return b
+}
+
+// intentionally takes 1 ref and 1 as value
+int64 test4_compare(int64[10]& arr1, int64[10] arr2){
+    int64 i, res
+    i = 0
+    res = 0
+    while (i < 10) {
+        int64 cmp
+        cmp = arr1[i] == arr2[i]
+        if(cmp == 0){
+            res = 1
+        }
+        i = i + 1
+    }
+    return res
+}
+
+
+
+// returns zero if the arrays are the same
+int64 test4(int64[10] arr1, int64[10] arr2){
+    int64 res
+    res = 0
+
+    res = res + test4_compare(arr1, arr2)
+    res = res + test4_compare(arr2, arr1)
+    return res
+}
+
+
+
+

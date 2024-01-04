@@ -1,0 +1,6 @@
+
+int64 test2(int64 a, int64 b){
+  return a + b
+}
+
+
