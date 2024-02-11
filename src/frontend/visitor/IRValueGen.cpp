@@ -146,8 +146,6 @@ void IRValueGen::visit(const ast::BinaryOperation* b) {
       return;
     default:
       ASSERT(false, "shouldnt reach");
-      value_ = nullptr;
-      return;
   }
 }
 

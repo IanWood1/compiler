@@ -14,8 +14,8 @@ class TraverseAst : public AbstractVisitorValue, public AbstractVisitorInst {
   struct TraversalState {
     Program* new_program = nullptr;
     const Program* old_program = nullptr;
-    ast::Function* new_function;
-    const ast::Function* old_function;
+    ast::Function* new_function{};
+    const ast::Function* old_function{};
     std::vector<const ast::Value*> old_value_stack;
     std::vector<const ast::Instruction*> old_instruction_stack;
   };

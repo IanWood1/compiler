@@ -60,7 +60,7 @@ void DumpAST::visit(const ast::FunctionCall* call) {
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*call->function);
-  for (auto arg : call->args) {
+  for (const auto& arg : call->args) {
     dump_value(*arg);
   }
   prefix_ = saved_prefix;
