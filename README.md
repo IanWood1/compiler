@@ -14,6 +14,10 @@ grow.
 - Arrays with compile-time size
 - User defined functions and types
 
+## TODO
+
+List of TODOs can be found in the issues section of the GitHub repo.
+
 ## Contact/Contributing
 
 I'm new grad who is passionate building compilers and solving exciting problems. If you want to reach out or contribute
