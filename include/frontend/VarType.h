@@ -43,10 +43,10 @@ class VarType {
   //
   // get types from other types
   //
-  ConstVarTypePtr get_ref_type_from() const;
-  ConstVarTypePtr get_pr_value_from() const;
-  ConstVarTypePtr get_l_value_from() const;
-  ConstVarTypePtr get_x_value_from() const;
+  [[nodiscard]] ConstVarTypePtr get_ref_type_from() const;
+  [[nodiscard]] ConstVarTypePtr get_pr_value_from() const;
+  [[nodiscard]] ConstVarTypePtr get_l_value_from() const;
+  [[nodiscard]] ConstVarTypePtr get_x_value_from() const;
 
   // non-static
   VarType() = delete;
@@ -60,7 +60,7 @@ class VarType {
   /// returns the llvm type corresponding to the variable in memory (stack)
   llvm::Type* get_llvm_stack_alloc_ty(llvm::LLVMContext& context) const;
 
-  int64_t get_object_size() const;
+  [[nodiscard]] int64_t get_object_size() const;
 
   /// returns the element type of an array type
   [[nodiscard]] const ConstVarTypePtr& get_elem_type() const;
@@ -151,6 +151,6 @@ class VarType {
   static ConstVarTypePtr find_var_type_or_create(
       const TypeIdentifier& type_identifier, MemberTypes members,
       MemberNameToIndex member_name_to_index);
-  int64_t get_struct_size() const;
+  [[nodiscard]] int64_t get_struct_size() const;
 };
 }  // namespace frontend

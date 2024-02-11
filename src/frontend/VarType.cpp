@@ -24,7 +24,7 @@ ConstVarTypePtr VarType::get_array_type(const std::string& type_name,
                                  MemberTypes{std::move(elem_type)}, {});
 }
 ConstVarTypePtr VarType::get_atomic_type(const std::string& type_name) {
-  TypeCat category = TypeCat::NONE;
+  TypeCat category;
 
   if (type_name == "void") {
     category = TypeCat::VOID;
@@ -40,7 +40,7 @@ ConstVarTypePtr VarType::get_atomic_type(const std::string& type_name) {
 }
 
 ConstVarTypePtr VarType::find_type_by_name(const std::string& type_name) {
-  TypeCat category = TypeCat::NONE;
+  TypeCat category;
   if (type_name == "void") {
     category = TypeCat::VOID;
   } else if (type_name == "int64") {
@@ -137,12 +137,13 @@ llvm::Type* VarType::get_llvm_stack_alloc_ty(llvm::LLVMContext& context) const {
     case TypeCat::STRUCTURE:
       // todo: refactor to func
       std::transform(members_.begin(), members_.end(), llvm_members.begin(),
-                     [&](ConstVarTypePtr ptr) {
+                     [&](const ConstVarTypePtr& ptr) {
                        return ptr->get_llvm_stack_alloc_ty(context);
                      });
       return llvm::StructType::create(llvm_members, "test", false);
+    default:
+      FRONTEND_ERROR("unknown type");
   }
-  FRONTEND_ERROR("unknown type");
 }
 
 int64_t VarType::get_object_size() const {

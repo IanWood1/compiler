@@ -8,8 +8,8 @@
 
 int main(int argc, char** argv) {
   // TODO: parse command line arguments
-  bool enable_code_generator = true;
-  if (enable_code_generator) {
+  [[maybe_unused]] bool enable_code_generator;
+  if (true) {
     std::string input_fname = "../../test.program";
     if (argc > 1) {
       input_fname = argv[1];

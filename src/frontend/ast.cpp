@@ -12,8 +12,7 @@
 #include "frontend/visitor/AbstractVisitorInst.h"
 #include "frontend/visitor/AbstractVisitorValue.h"
 
-namespace frontend {
-namespace ast {
+namespace frontend::ast {
 BinOpId string_to_binop(const std::string& op) {
   if (op == "+")
     return ADD;
@@ -141,8 +140,7 @@ void BinaryOperation::accept(AbstractVisitorValue* v) const {
 }
 
 ArrayAccess::ArrayAccess(ConstValuePtr&& var,
-                         std::vector<ConstValuePtr>&& indices,
-                         uint64_t line_number)
+                         std::vector<ConstValuePtr>&& indices, uint64_t)
     : var(std::move(var)), indices(std::move(indices)) {}
 
 void ArrayAccess::accept(AbstractVisitorValue* v) const {
@@ -216,6 +214,4 @@ void InstructionDecl::accept(AbstractVisitorInst* v) const {
   v->visit(this);
 }
 
-}  // namespace ast
-
-}  // namespace frontend
+}  // namespace frontend::ast

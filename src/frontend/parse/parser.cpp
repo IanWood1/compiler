@@ -43,8 +43,8 @@
   ASSERT(!isItemsNull, "state.parsed_items contains nullptr");
 #define PEGTL_ACTION_FIRE_PRINT(msg) std::cout << msg << std::endl;
 #else
-#define PEGTL_PRINT_RULE(actionName)
-#define PEGTL_ACTION_FIRE_PRINT(msg)
+#define PEGTL_PRINT_RULE(actionName) (void*)0
+#define PEGTL_ACTION_FIRE_PRINT(msg) (void*)0
 #endif
 
 namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
@@ -404,8 +404,7 @@ struct action<array_type_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(array_type_rule);
-    ast::Integer* size =
-        dynamic_cast<ast::Integer*>(state.parsed_items.back().get());
+    auto* size = dynamic_cast<ast::Integer*>(state.parsed_items.back().get());
     ASSERT(size != nullptr, "size of array is not an integer");
     std::string type_name = in.string();
     type_name.erase(std::remove(type_name.begin(), type_name.end(), ' '),
@@ -503,7 +502,7 @@ struct action<binary_operation_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(binary_operation_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto& rhs = state.parsed_items.back();
     auto& lhs = state.parsed_items[state.parsed_items.size() - 2];
     auto binop = std::make_shared<ast::BinaryOperation>(
@@ -521,7 +520,7 @@ struct action<array_access_rule> {
     PEGTL_PRINT_RULE(array_access_rule);
     std::string str = in.string();
     int64_t num_args = std::count(str.begin(), str.end(), '[');
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     std::vector<ast::ConstValuePtr> indices;
     for (int i = 0; i < num_args; i++) {
       indices.push_back(state.parsed_items.back());
@@ -573,7 +572,7 @@ struct action<Instruction_return_rule_value> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_return_rule_value);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     state.parsed_scopes.back()->instructions.push_back(
         std::make_unique<ast::InstructionReturn>(state.parsed_items.back()));
     state.parsed_items.pop_back();
@@ -585,7 +584,7 @@ struct action<Instruction_return_rule_void> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_return_rule_void);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     state.parsed_scopes.back()->instructions.push_back(
         std::make_unique<ast::InstructionReturn>());
   }
@@ -596,8 +595,8 @@ struct action<variable_in_declaration_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(variable_in_declaration_rule);
-    auto& currentF = p.functions.back();
-    auto var = ast::Variable::get(in.string(), currentF.get());
+    auto& current_f = p.functions.back();
+    auto var = ast::Variable::get(in.string(), current_f.get());
     state.parsed_declared_vars.push_back(std::move(var));
   }
 };
@@ -628,7 +627,7 @@ struct action<Instruction_while_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_while_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
 
     auto& body = state.parsed_scopes.back()->instructions.back();
     auto& cond = state.parsed_items.back();
@@ -646,7 +645,7 @@ struct action<Instruction_if_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_if_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto i = std::make_unique<ast::InstructionIfStatement>();
     ASSERT(
         dynamic_cast<const ast::Scope*>(
@@ -665,7 +664,7 @@ struct action<Instruction_break_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_break_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto i = std::make_unique<ast::InstructionBreak>();
     state.parsed_scopes.back()->instructions.push_back(std::move(i));
   }
@@ -676,7 +675,7 @@ struct action<Instruction_continue_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_continue_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto i = std::make_unique<ast::InstructionContinue>();
     state.parsed_scopes.back()->instructions.push_back(std::move(i));
   }
@@ -687,7 +686,7 @@ struct action<Instruction_assignment_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_assignment_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto& src = state.parsed_items.back();
     auto& dst = state.parsed_items[state.parsed_items.size() - 2];
     if (dst == nullptr && src == nullptr) {
@@ -709,10 +708,10 @@ struct action<Instruction_assignment_rule> {
     //   auto fn = std::make_shared<FunctionName>(std::string(src->name),
     //   nullptr); i->src = fn;
 
-    //  // remove fn->name from Variable::variables[currentF]
-    //  auto it = Variable::variables[currentF.get()].find(fn->name);
-    //  if (it != Variable::variables[currentF.get()].end()) {
-    //    Variable::variables[currentF.get()].erase(it);
+    //  // remove fn->name from Variable::variables[current_f]
+    //  auto it = Variable::variables[current_f.get()].find(fn->name);
+    //  if (it != Variable::variables[current_f.get()].end()) {
+    //    Variable::variables[current_f.get()].erase(it);
     //  }
     //}
 
@@ -734,7 +733,7 @@ struct action<function_call_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(function_call_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     auto f_call = std::make_shared<ast::FunctionCall>(
         std::move(state.parsed_items.back()),
         std::move(state.parsed_function_args.back()));
@@ -759,7 +758,7 @@ struct action<Instruction_function_call_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(Instruction_function_call_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     state.parsed_scopes.back()->instructions.push_back(
         std::make_unique<ast::InstructionFunctionCall>(
             state.parsed_items.back()));
@@ -773,7 +772,7 @@ struct action<new_scope_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(new_scope_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     state.parsed_scopes.emplace_back(std::make_unique<ast::Scope>());
   }
 };
@@ -783,9 +782,9 @@ struct action<end_scope_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(end_scope_rule);
-    auto& currentF = p.functions.back();
+    auto& current_f = p.functions.back();
     if (state.parsed_scopes.size() == 1) {
-      currentF->scope = std::move(state.parsed_scopes.back());
+      current_f->scope = std::move(state.parsed_scopes.back());
       state.parsed_scopes.pop_back();
     } else {
       auto scope = std::move(state.parsed_scopes.back());
@@ -797,7 +796,7 @@ struct action<end_scope_rule> {
 
 }  // namespace parser
 
-Program parse_file(const char* fileName) {
+Program parse_file(const char* file_name) {
   /*
    * Check the grammar for some possible issues.
    */
@@ -806,10 +805,10 @@ Program parse_file(const char* fileName) {
   /*
    * Parse.
    */
-  file_input<> fileInput(fileName);
+  file_input<> file_input(file_name);
   Program p;
   parser::State state;
-  bool ret = parse<parser::grammar, parser::action>(fileInput, p, state);
+  bool ret = parse<parser::grammar, parser::action>(file_input, p, state);
   ASSERT(ret, "parse failed");
 
   return p;

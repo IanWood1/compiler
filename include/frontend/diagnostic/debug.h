@@ -12,7 +12,9 @@
 
 #ifdef DEBUGIR
 
-#define NOT_IMPLEMENTED() FRONTEND_ERROR("not implemented");
+#define NOT_IMPLEMENTED()            \
+  FRONTEND_ERROR("not implemented"); \
+  (void*)0
 #define ASSERT(condition, msg)                                             \
   if (!(condition)) {                                                      \
     std::cerr << "ASSERTION FAILED: " << (msg) << " [in file " << __FILE__ \

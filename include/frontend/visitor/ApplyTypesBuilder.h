@@ -5,6 +5,7 @@
 namespace frontend {
 
 // This class assumes that variables have been already assigned a type
+// My attempt at using CRTPish style to make new visitors easier (might have to refactor later)
 class ApplyTypesBuilder
     : public TraverseAst<ApplyTypesBuilder, ast::ConstInstrPtr,
                          ast::ConstValuePtr> {

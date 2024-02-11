@@ -59,8 +59,8 @@ struct Value : TypedNode {
   virtual void accept(AbstractVisitorValue* v) const = 0;
 
   Value() = default;
-  explicit Value(ConstVarTypePtr ptr) : TypedNode(std::move(ptr)){};
-  virtual ~Value() = 0;
+  explicit Value(ConstVarTypePtr type_ptr) : TypedNode(std::move(type_ptr)){};
+  ~Value() override = 0;
 };
 struct Variable : public Value {
  public:
@@ -143,7 +143,7 @@ struct ArrayAllocate : public Value {
 struct Instruction : TypedNode {
  public:
   virtual void accept(AbstractVisitorInst* v) const = 0;
-  virtual ~Instruction() = default;
+  ~Instruction() override = default;
 
 }; /*
  * Instructions.

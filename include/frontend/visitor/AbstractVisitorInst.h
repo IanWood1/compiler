@@ -14,7 +14,8 @@ struct InstructionBreak;
 struct InstructionContinue;
 struct InstructionDecl;
 struct Scope;
-};  // namespace ast
+
+}  // namespace ast
 
 class AbstractVisitorInst {
  public:
