@@ -15,7 +15,6 @@ project("compiler")
 # Add source to this project's executable. 
 add_subdirectory("src")
 add_subdirectory("tests")
-#add_executable (testprog test.cpp src/output.o)
 
 message("here! ${MSVC}")
 if (MSVC)
