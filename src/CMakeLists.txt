@@ -15,8 +15,6 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 add_library(LLVM INTERFACE)
 
-
-include_directories(${CMAKE_SOURCE_DIR}/external/PEGTL/include)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Add source to this project's executable.

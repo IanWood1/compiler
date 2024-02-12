@@ -17,7 +17,7 @@ foreach (PROGRAM_FILE ${ALL_PROGRAM_FILES})
             VERBATIM
     )
 endforeach (PROGRAM_FILE)
- 
+
 message(STATUS "TESTEE_FILES: ${TESTEE_FILES}")
 
 add_custom_target(

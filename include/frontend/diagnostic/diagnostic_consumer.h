@@ -4,6 +4,7 @@ The original source code can be found at https://github.com/llvm/llvm-project/tr
 */
 
 #pragma once
+#include "frontend/diagnostic/diagnostic_id.h"
 
 namespace diagnostic {
 //
