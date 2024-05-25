@@ -100,7 +100,7 @@ void IRInstructionGen::visit(const ast::InstructionWhileLoop* w) {
   builder_.CreateCondBr(cond, body_block, continue_block);
 
   // add body to body_block
-  the_function->insert(the_function->end(), body_block);
+  the_function->getBasicBlockList().insert(the_function->end(), body_block);
   builder_.SetInsertPoint(body_block);
   w->body->accept(this);
 
@@ -108,7 +108,7 @@ void IRInstructionGen::visit(const ast::InstructionWhileLoop* w) {
   builder_.CreateBr(cond_block);
 
   // add continue block
-  the_function->insert(the_function->end(), continue_block);
+  the_function->getBasicBlockList().insert(the_function->end(), continue_block);
   builder_.SetInsertPoint(continue_block);
 }
 void IRInstructionGen::visit(const ast::InstructionIfStatement* f) {
@@ -128,7 +128,7 @@ void IRInstructionGen::visit(const ast::InstructionIfStatement* f) {
   builder_.CreateBr(continue_block);
 
   // continue block
-  the_function->insert(the_function->end(), continue_block);
+  the_function->getBasicBlockList().insert(the_function->end(), continue_block);
   builder_.SetInsertPoint(continue_block);
 }
 void IRInstructionGen::visit(const ast::InstructionBreak* b) {

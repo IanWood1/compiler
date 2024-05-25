@@ -56,9 +56,9 @@ void CodeGenerator::generate_code(const Program& program,
   llvm_optim_pass();
 
   llvm_codegen_pass(output_filename + ".asm",
-                    llvm::CodeGenFileType::AssemblyFile);
+                    llvm::CodeGenFileType::CGFT_AssemblyFile);
 
-  llvm_codegen_pass(output_filename, llvm::CodeGenFileType::ObjectFile);
+  llvm_codegen_pass(output_filename, llvm::CodeGenFileType::CGFT_ObjectFile);
   module_.print(llvm::errs(), nullptr);
 }
 

@@ -1,4 +1,3 @@
-#include <iostream>
 
 #include "../include/frontend/code_generator.h"
 #include "frontend/ast.h"

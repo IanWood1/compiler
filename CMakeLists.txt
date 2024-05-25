@@ -17,7 +17,6 @@ add_subdirectory("src")
 add_subdirectory("tests")
 #add_executable (testprog test.cpp src/output.o)
 
-message("here! ${MSVC}")
 if (MSVC)
     message("using msvc")
     set(CMAKE_CXX_FLAGS "/W4" CACHE STRING "" FORCE)
