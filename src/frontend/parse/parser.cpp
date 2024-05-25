@@ -7,17 +7,12 @@
 #include <string>
 #include <vector>
 
+#include <tao/pegtl.hpp>
+#include <tao/pegtl/contrib/analyze.hpp>
+#include <tao/pegtl/contrib/raw_string.hpp>
 #include "frontend/VarType.h"
 #include "frontend/ast.h"
 #include "frontend/diagnostic/debug.h"
-#include "tao/pegtl/analyze.hpp"
-#include "tao/pegtl/ascii.hpp"
-#include "tao/pegtl/config.hpp"
-#include "tao/pegtl/file_input.hpp"
-#include "tao/pegtl/internal/pegtl_string.hpp"
-#include "tao/pegtl/nothing.hpp"
-#include "tao/pegtl/parse.hpp"
-#include "tao/pegtl/rules.hpp"
 
 #undef FIRING_DEBUG
 #ifdef FIRING_DEBUG
@@ -47,8 +42,8 @@
 #define PEGTL_ACTION_FIRE_PRINT(msg) (void*)0
 #endif
 
-namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
-
+// namespace pegtl = tao::TAO_PEGTL_NAMESPACE;
+namespace pegtl = TAO_PEGTL_NAMESPACE;
 using namespace pegtl;
 
 namespace frontend {
@@ -83,23 +78,23 @@ struct name
 /*
  * Keywords.
  */
-struct str_return : TAOCPP_PEGTL_STRING("return") {};
-struct str_arrow : TAOCPP_PEGTL_STRING("=") {};  //"
+struct str_return : TAO_PEGTL_STRING("return") {};
+struct str_arrow : TAO_PEGTL_STRING("=") {};  //"
 
-struct str_leq : TAOCPP_PEGTL_STRING("<=") {};
-struct str_geq : TAOCPP_PEGTL_STRING(">=") {};
-struct str_eq : TAOCPP_PEGTL_STRING("==") {};
-struct str_lt : TAOCPP_PEGTL_STRING("<") {};
-struct str_gt : TAOCPP_PEGTL_STRING(">") {};
-struct str_add : TAOCPP_PEGTL_STRING("+") {};
-struct str_sub : TAOCPP_PEGTL_STRING("-") {};
-struct str_mul : TAOCPP_PEGTL_STRING("*") {};
-struct str_shl : TAOCPP_PEGTL_STRING("<<") {};
-struct str_shr : TAOCPP_PEGTL_STRING(">>") {};
-struct str_and : TAOCPP_PEGTL_STRING("&") {};
+struct str_leq : TAO_PEGTL_STRING("<=") {};
+struct str_geq : TAO_PEGTL_STRING(">=") {};
+struct str_eq : TAO_PEGTL_STRING("==") {};
+struct str_lt : TAO_PEGTL_STRING("<") {};
+struct str_gt : TAO_PEGTL_STRING(">") {};
+struct str_add : TAO_PEGTL_STRING("+") {};
+struct str_sub : TAO_PEGTL_STRING("-") {};
+struct str_mul : TAO_PEGTL_STRING("*") {};
+struct str_shl : TAO_PEGTL_STRING("<<") {};
+struct str_shr : TAO_PEGTL_STRING(">>") {};
+struct str_and : TAO_PEGTL_STRING("&") {};
 
-struct str_print : TAOCPP_PEGTL_STRING("print") {};
-struct str_input : TAOCPP_PEGTL_STRING("input") {};
+struct str_print : TAO_PEGTL_STRING("print") {};
+struct str_input : TAO_PEGTL_STRING("input") {};
 
 struct keywords : pegtl::sor<str_return> {};
 
@@ -116,7 +111,7 @@ struct function_name_as_label_rule : function_name_rule {};
 struct library_function : pegtl::sor<str_print, str_input> {};
 
 struct comment
-    : pegtl::disable<TAOCPP_PEGTL_STRING("//"), pegtl::until<pegtl::eolf>> {};
+    : pegtl::disable<TAO_PEGTL_STRING("//"), pegtl::until<pegtl::eolf>> {};
 
 struct seps : pegtl::star<pegtl::sor<pegtl::ascii::space, comment>> {};
 
@@ -154,20 +149,20 @@ struct type_rule;
 struct type_name_rule : pegtl::seq<pegtl::not_at<keywords>, name> {};
 struct basic_type_rule
     : pegtl::seq<type_name_rule, seps,
-                 pegtl::star<TAOCPP_PEGTL_STRING("<"), seps, type_rule, seps,
-                             TAOCPP_PEGTL_STRING(">")>> {};
+                 pegtl::star<TAO_PEGTL_STRING("<"), seps, type_rule, seps,
+                             TAO_PEGTL_STRING(">")>> {};
 
 struct array_type_rule
     : pegtl::seq<basic_type_rule, seps,
-                 pegtl::star<TAOCPP_PEGTL_STRING("<"), seps, type_rule, seps,
-                             TAOCPP_PEGTL_STRING(">")>,
+                 pegtl::star<TAO_PEGTL_STRING("<"), seps, type_rule, seps,
+                             TAO_PEGTL_STRING(">")>,
                  seps,
-                 pegtl::plus<TAOCPP_PEGTL_STRING("["), seps, number, seps,
-                             TAOCPP_PEGTL_STRING("]")>> {};
+                 pegtl::plus<TAO_PEGTL_STRING("["), seps, number, seps,
+                             TAO_PEGTL_STRING("]")>> {};
 struct reference_type_rule
     : pegtl::seq<pegtl::at<pegtl::sor<array_type_rule, basic_type_rule>>,
                  pegtl::sor<array_type_rule, basic_type_rule>, seps,
-                 TAOCPP_PEGTL_STRING("&")> {};
+                 TAO_PEGTL_STRING("&")> {};
 struct type_rule
     : pegtl::sor<
           pegtl::seq<pegtl::at<reference_type_rule>, reference_type_rule>,
@@ -194,23 +189,23 @@ struct function_call_name_rule
 
 struct function_call_rule
     : pegtl::seq<seps, pegtl::sor<function_call_name_rule>, seps,
-                 TAOCPP_PEGTL_STRING("("), seps,
+                 TAO_PEGTL_STRING("("), seps,
                  pegtl::star<function_argument_rule, seps,
-                             pegtl::star<TAOCPP_PEGTL_STRING(",")>, seps>,
-                 seps, TAOCPP_PEGTL_STRING(")"), seps> {};
+                             pegtl::star<TAO_PEGTL_STRING(",")>, seps>,
+                 seps, TAO_PEGTL_STRING(")"), seps> {};
 
 struct array_access_rule
     : pegtl::seq<seps, variable_rule, seps,
-                 pegtl::plus<pegtl::seq<seps, TAOCPP_PEGTL_STRING("["), seps,
+                 pegtl::plus<pegtl::seq<seps, TAO_PEGTL_STRING("["), seps,
                                         expression_rule, seps,
-                                        TAOCPP_PEGTL_STRING("]"), seps>>,
+                                        TAO_PEGTL_STRING("]"), seps>>,
                  seps> {};
 
 struct array_allocate_rule
-    : pegtl::seq<seps, TAOCPP_PEGTL_STRING("["), seps,
-                 pegtl::seq<expression_rule, seps, TAOCPP_PEGTL_STRING(";"),
-                            seps, number>,
-                 seps, TAOCPP_PEGTL_STRING("]"), seps> {};
+    : pegtl::seq<seps, TAO_PEGTL_STRING("["), seps,
+                 pegtl::seq<expression_rule, seps, TAO_PEGTL_STRING(";"), seps,
+                            number>,
+                 seps, TAO_PEGTL_STRING("]"), seps> {};
 
 struct Instruction_variable_declaration_rule : var_declaration_rule {};
 
@@ -231,20 +226,20 @@ struct Instruction_function_call_rule
 // predeclare Scope_rule
 struct Scope_rule;
 struct Instruction_while_rule
-    : pegtl::seq<seps, TAOCPP_PEGTL_STRING("while"), seps,
-                 TAOCPP_PEGTL_STRING("("), seps, binary_operation_rule, seps,
-                 TAOCPP_PEGTL_STRING(")"), seps, Scope_rule, seps> {};
+    : pegtl::seq<seps, TAO_PEGTL_STRING("while"), seps, TAO_PEGTL_STRING("("),
+                 seps, binary_operation_rule, seps, TAO_PEGTL_STRING(")"), seps,
+                 Scope_rule, seps> {};
 
 struct Instruction_if_rule
-    : pegtl::seq<seps, TAOCPP_PEGTL_STRING("if"), seps,
-                 TAOCPP_PEGTL_STRING("("), seps, binary_operation_rule, seps,
-                 TAOCPP_PEGTL_STRING(")"), seps, Scope_rule, seps> {};
+    : pegtl::seq<seps, TAO_PEGTL_STRING("if"), seps, TAO_PEGTL_STRING("("),
+                 seps, binary_operation_rule, seps, TAO_PEGTL_STRING(")"), seps,
+                 Scope_rule, seps> {};
 
 struct Instruction_break_rule
-    : pegtl::seq<seps, TAOCPP_PEGTL_STRING("break"), seps> {};
+    : pegtl::seq<seps, TAO_PEGTL_STRING("break"), seps> {};
 
 struct Instruction_continue_rule
-    : pegtl::seq<seps, TAOCPP_PEGTL_STRING("continue"), seps> {};
+    : pegtl::seq<seps, TAO_PEGTL_STRING("continue"), seps> {};
 
 struct Instruction_rule
     : pegtl::sor<
@@ -270,9 +265,9 @@ struct Instruction_rule
 struct Instructions_rule
     : pegtl::star<pegtl::seq<seps, Instruction_rule, seps>> {};
 
-struct new_scope_rule : TAOCPP_PEGTL_STRING("{") {};
+struct new_scope_rule : TAO_PEGTL_STRING("{") {};
 
-struct end_scope_rule : TAOCPP_PEGTL_STRING("}") {};
+struct end_scope_rule : TAO_PEGTL_STRING("}") {};
 
 struct Scope_rule : pegtl::seq<seps, new_scope_rule, seps, Instructions_rule,
                                seps, end_scope_rule, seps> {};
@@ -282,7 +277,7 @@ struct Function_rule
           seps, type_rule, seps, function_name_rule, seps, pegtl::one<'('>,
           seps,
           pegtl::star<pegtl::seq<seps, function_definition_argument_rule, seps,
-                                 pegtl::star<TAOCPP_PEGTL_STRING(",")>, seps>>,
+                                 pegtl::star<TAO_PEGTL_STRING(",")>, seps>>,
           pegtl::one<')'>, seps, Scope_rule, seps> {};
 
 struct struct_member_name_rule : pegtl::seq<name> {};
@@ -290,10 +285,10 @@ struct struct_definition_member_rule
     : pegtl::seq<seps, type_rule, seps, struct_member_name_rule, seps> {};
 struct struct_name_rule : pegtl::seq<name> {};
 struct Struct_rule
-    : pegtl::seq<TAOCPP_PEGTL_STRING("struct"), seps, struct_name_rule, seps,
-                 TAOCPP_PEGTL_STRING("{"), seps,
+    : pegtl::seq<TAO_PEGTL_STRING("struct"), seps, struct_name_rule, seps,
+                 TAO_PEGTL_STRING("{"), seps,
                  pegtl::star<struct_definition_member_rule>, seps,
-                 TAOCPP_PEGTL_STRING("}")> {};
+                 TAO_PEGTL_STRING("}")> {};
 
 struct Functions_rule
     : pegtl::plus<seps, pegtl::sor<Struct_rule, Function_rule>, seps> {};
@@ -330,10 +325,10 @@ struct action<function_name_rule> {
 //    : pegtl::seq<seps, type_rule, seps, struct_member_name_rule, seps> {};
 //struct struct_name_rule : pegtl::seq<name> {};
 //struct Struct_rule
-//    : pegtl::seq<TAOCPP_PEGTL_STRING("struct"), seps, struct_name_rule, seps,
-//                 TAOCPP_PEGTL_STRING("{"), seps,
+//    : pegtl::seq<TAO_PEGTL_STRING("struct"), seps, struct_name_rule, seps,
+//                 TAO_PEGTL_STRING("{"), seps,
 //                 pegtl::star<struct_definition_member_rule>, seps,
-//                 TAOCPP_PEGTL_STRING("}")> {};
+//                 TAO_PEGTL_STRING("}")> {};
 template <>
 struct action<struct_member_name_rule> {
   template <typename Input>

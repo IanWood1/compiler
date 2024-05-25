@@ -1,4 +1,4 @@
-set(${MY_COMPILER_EXE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+# set(${MY_COMPILER_EXE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 #set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 
@@ -11,25 +11,33 @@ message(STATUS "LLVM definitions: ${LLVM_DEFINITIONS}")
 message(STATUS "LLVM tools: ${LLVM_TOOLS_BINARY_DIR}")
 
 include_directories(${LLVM_INCLUDE_DIRS})
-separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
-add_definitions(${LLVM_DEFINITIONS_LIST})
-add_library(LLVM INTERFACE)
+# separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+add_definitions(${LLVM_DEFINITIONS})
+# add_library(LLVM INTERFACE)
 
 
-include_directories(${CMAKE_SOURCE_DIR}/external/PEGTL/include)
+
+
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Add source to this project's executable.
 add_subdirectory(frontend)
 add_executable(compiler compiler.cpp)
-target_link_libraries(compiler Frontend)
-add_dependencies(compiler Frontend)
 
 # Find the libraries that correspond to the LLVM components
 # that we wish to use
-target_include_directories(LLVM SYSTEM INTERFACE ${LLVM_INCLUDE_DIRS})
-target_link_libraries(LLVM INTERFACE ${LLVM_AVAILABLE_LIBS})
-target_compile_definitions(LLVM INTERFACE ${LLVM_DEFINITIONS} -DNOMINMAX)
+# target_include_directories(LLVM SYSTEM INTERFACE ${LLVM_INCLUDE_DIRS})
+# target_link_libraries(LLVM INTERFACE ${LLVM_AVAILABLE_LIBS})
+# target_compile_definitions(LLVM INTERFACE ${LLVM_DEFINITIONS} -DNOMINMAX)
+
+
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+
+# Link against LLVM libraries
+target_link_libraries(compiler ${LLVM} Frontend)
+add_dependencies(compiler Frontend)
+
 
 
 # Find the libraries that correspond to the LLVM components

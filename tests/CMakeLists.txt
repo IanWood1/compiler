@@ -9,7 +9,7 @@ foreach (PROGRAM_FILE ${ALL_PROGRAM_FILES})
     add_custom_command(
             OUTPUT
             ${CMAKE_CURRENT_BINARY_DIR}/${PROGRAM_FILE_NAME}-testee.o
-            COMMAND ${PROJECT_BINARY_DIR}/src/compiler.exe ${PROGRAM_FILE_NAME}.program ${CMAKE_CURRENT_BINARY_DIR}/${PROGRAM_FILE_NAME}-testee.o
+            COMMAND ${PROJECT_BINARY_DIR}/src/compiler ${PROGRAM_FILE_NAME}.program ${CMAKE_CURRENT_BINARY_DIR}/${PROGRAM_FILE_NAME}-testee.o
             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${PROGRAM_FILE_NAME}.program
             DEPENDS compiler
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -31,3 +31,6 @@ add_custom_target(
 add_executable(RunTests "RunTests.cpp" ${TESTEE_FILES} "TestFramework.h")
 add_dependencies(RunTests build_tests)
 target_link_libraries(RunTests Frontend)
+
+
+add_test(mytest RunTests COMMAND RunTests)
