@@ -12,7 +12,6 @@ target_link_libraries(compiler
   frontend_ast
   frontend_codegen
   frontend_types
-  Boost::program_options
 
   LLVM 
 )
@@ -21,6 +20,6 @@ target_link_libraries(compiler
 # that we wish to use
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-    set_property(TARGET compiler PROPERTY CXX_STANDARD 20)
+  set_property(TARGET compiler PROPERTY CXX_STANDARD 20)
 endif ()
- 
+

@@ -12,14 +12,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 project("compiler")
 
-
 include(CTest)
 
 # Add source to this project's executable. 
 add_subdirectory(external/PEGTL EXCLUDE_FROM_ALL)
-find_package( Boost 1.40 COMPONENTS program_options REQUIRED )
-include_directories(${Boost_INCLUDE_DIR})
-
 
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
@@ -34,15 +30,7 @@ include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 # add_library(LLVM INTERFACE)
 
-
-
-
-
 include_directories(${CMAKE_SOURCE_DIR}/include)
-
-
-
-
 
 message(STATUS "ALL_PROGRAM_FILES: ${ALL_PROGRAM_FILES}")
 
