@@ -64,4 +64,5 @@ int main() {
 
   std::cout << "\nPassed " << total_passed << " of " << total_tests
             << " tests\n";
+  return 0;
 }
