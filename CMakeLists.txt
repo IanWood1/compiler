@@ -3,6 +3,23 @@
 #
 cmake_minimum_required(VERSION 3.8)
 
+# Setting up ccache or sccache
+find_program(CCACHE "ccache")
+if(CCACHE)
+  message("${CCACHE} has been found in the system!")
+  set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE})
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+else()
+  find_program(SCCACHE "sccache")
+  if(SCCACHE)
+    message("${SCCACHE} has been found in the system!")
+    set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE})
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE})
+  else()
+    message("neither ccache or sccache have been found in the system!")
+  endif(SCCACHE)
+endif(CCACHE)
+
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
