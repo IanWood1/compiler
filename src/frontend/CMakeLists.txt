@@ -1,16 +1,18 @@
+add_subdirectory(parse)
+add_subdirectory(visitor)
+add_subdirectory(ast)
 
-file(GLOB_RECURSE FRONTEND_SOURCES *)
-add_library(Frontend ${FRONTEND_SOURCES}
-        visitor/DumpAST.cpp
-        visitor/ApplyTypesBuilder.cpp
+
+add_library(Frontend 
+  code_generator.cpp 
+  VarType.cpp
 )
 
+target_link_libraries(Frontend PRIVATE 
+  frontend_parse
+  frontend_visitor
+  frontend_ast
 
-if (TARGET taocpp::pegtl)
-    message(STATUS "PEGTL target is available.")
-else()
-    message(FATAL_ERROR "PEGTL target is not available. Ensure PEGTL is added as a subdirectory correctly.")
-endif()
-
-target_link_libraries(Frontend PRIVATE LLVM taocpp::pegtl)
+  LLVM 
+)
 

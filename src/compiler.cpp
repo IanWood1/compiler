@@ -1,6 +1,5 @@
-
-#include "../include/frontend/code_generator.h"
 #include "frontend/ast.h"
+#include "frontend/code_generator.h"
 #include "frontend/parse/parser.h"
 #include "frontend/visitor/ApplyTypesBuilder.h"
 #include "frontend/visitor/DumpAST.h"

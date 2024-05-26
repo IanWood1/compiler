@@ -25,13 +25,6 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 add_subdirectory(frontend)
 add_executable(compiler compiler.cpp)
 
-# Find the libraries that correspond to the LLVM components
-# that we wish to use
-# target_include_directories(LLVM SYSTEM INTERFACE ${LLVM_INCLUDE_DIRS})
-# target_link_libraries(LLVM INTERFACE ${LLVM_AVAILABLE_LIBS})
-# target_compile_definitions(LLVM INTERFACE ${LLVM_DEFINITIONS} -DNOMINMAX)
-
-
 llvm_map_components_to_libnames(llvm_libs support core irreader)
 
 # Link against LLVM libraries
