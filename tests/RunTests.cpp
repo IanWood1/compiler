@@ -2,9 +2,6 @@
 #include <iostream>
 #include <vector>
 
-#include "TestFramework.h"
-
-// All .program files are linked into this test file. They are externed below
 extern "C" {
 int64_t test1(int64_t* array1, int64_t* array2, int64_t length);
 int64_t test2(int64_t v1, int64_t v2);
@@ -27,11 +24,10 @@ bool run_test(Expected expected, Result result, const std::string& test_name) {
   if (result != expected) {
     std::cout << "\tFAIL" << std::endl;
     return false;
-  } else {
-    std::cout << "\tPASS!" << std::endl;
-    total_passed++;
-    return true;
   }
+  std::cout << "\tPASS!" << std::endl;
+  total_passed++;
+  return true;
 }
 
 template <class Input>

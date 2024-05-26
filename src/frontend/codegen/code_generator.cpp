@@ -31,11 +31,12 @@
 #include <vector>
 
 #include "frontend/ast.h"
+#include "frontend/diagnostic/debug.h"
 #include "frontend/visitor/IRInstructionGen.h"
 
 namespace frontend {
 CodeGenerator::CodeGenerator()
-    : context_(), module_("my compiler!!!", context_), builder_(context_) {}
+    : module_("my compiler!!!", context_), builder_(context_) {}
 void CodeGenerator::generate_code(const Program& program,
                                   const std::string& output_filename) {
   /*
@@ -49,7 +50,7 @@ void CodeGenerator::generate_code(const Program& program,
     generate_llvm_ir(f, irgen);
   }
 
-  module_.print(llvm::errs(), nullptr);
+  // module_.print(llvm::errs(), nullptr);
 
   llvm_verify_generated_ir();
 
@@ -59,12 +60,12 @@ void CodeGenerator::generate_code(const Program& program,
                     llvm::CodeGenFileType::CGFT_AssemblyFile);
 
   llvm_codegen_pass(output_filename, llvm::CodeGenFileType::CGFT_ObjectFile);
-  module_.print(llvm::errs(), nullptr);
+  // module_.print(llvm::errs(), nullptr);
 }
 
 void CodeGenerator::llvm_verify_generated_ir() const {
-  std::cout << "==========================================\n";
-  std::cout << "Verifying correctness of generated LLVM IR\n";
+  DEBUG_PRINT("==========================================\n");
+  DEBUG_PRINT("Verifying correctness of generated LLVM IR\n");
   bool is_error = llvm::verifyModule(module_, &llvm::errs());
   if (is_error) {
     std::cout << "error: generated LLVM IR is not correct" << std::endl;
@@ -75,8 +76,8 @@ void CodeGenerator::llvm_verify_generated_ir() const {
 }
 
 void CodeGenerator::llvm_optim_pass() {
-  std::cout << "==========================================\n";
-  std::cout << "running opt passes ............\n";
+  DEBUG_PRINT("==========================================\n");
+  DEBUG_PRINT("running opt passes ............\n");
   // llvm::FunctionPassManager fpm;
   llvm::LoopAnalysisManager loop_analysis_manager;
   llvm::FunctionAnalysisManager function_analysis_manager;
@@ -109,17 +110,17 @@ void CodeGenerator::llvm_codegen_pass(const std::string& filename,
   llvm::InitializeAllAsmParsers();
   llvm::InitializeAllAsmPrinters();
   auto target_triple = llvm::sys::getDefaultTargetTriple();
-  std::cout << "target triple: " << target_triple << std::endl;
+  DEBUG_PRINT("target triple: " << target_triple << "\n");
   // target_triple = "x86_64-pc-linux-gnu";
 
-  auto cpu = "generic";
-  auto features = "";
+  const auto* cpu = "generic";
+  const auto* features = "";
   std::string error_str;
 
-  auto target = llvm::TargetRegistry::lookupTarget(target_triple, error_str);
+  const auto* target =
+      llvm::TargetRegistry::lookupTarget(target_triple, error_str);
   if (!target) {
-    std::cout << error_str << std::endl;
-    exit(1);
+    FRONTEND_ERROR(error_str);
   }
 
   llvm::TargetOptions opt;
@@ -133,8 +134,7 @@ void CodeGenerator::llvm_codegen_pass(const std::string& filename,
   llvm::raw_fd_ostream dest(filename, error_code, llvm::sys::fs::OF_None);
 
   if (error_code) {
-    llvm::errs() << "Could not open file: " << error_code.message();
-    exit(1);
+    FRONTEND_ERROR("Could not open file: " + error_code.message());
   }
 
   llvm::legacy::PassManager pass;
@@ -181,7 +181,7 @@ std::map<const ast::Variable*, llvm::Value*> CodeGenerator::function_setup(
   std::map<const ast::Variable*, llvm::Value*> allocated_variables;
   for (const auto& var : f->args) {
     // Note: intentionally skips last llvm func arg if it is a return value arg
-    auto llvm_arg = llvm_func->getArg(i);
+    auto* llvm_arg = llvm_func->getArg(i);
     setup_function_args(allocated_variables, llvm_arg, var);
     i++;
   }
@@ -192,9 +192,7 @@ void CodeGenerator::setup_function_args(
     llvm::Argument* llvm_arg, const ast::ConstValuePtr& var) {
   const auto* arg = dynamic_cast<const ast::Variable*>(var.get());
   if (!arg) {
-    std::cout << "error: arg in function definition is not a variable"
-              << std::endl;
-    exit(1);
+    FRONTEND_ERROR("error: arg in function definition is not a variable\n");
   }
   const auto& curr_arg = var;
 

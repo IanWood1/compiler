@@ -205,6 +205,24 @@ build ContinuousSubmit: phony CMakeFiles/ContinuousSubmit
 
 
 #############################################
+# Utility command for intrinsics_gen
+
+build intrinsics_gen: phony
+
+
+#############################################
+# Utility command for omp_gen
+
+build omp_gen: phony
+
+
+#############################################
+# Utility command for acc_gen
+
+build acc_gen: phony
+
+
+#############################################
 # Utility command for test
 
 build CMakeFiles/test.util: CUSTOM_COMMAND
@@ -591,24 +609,6 @@ build external/PEGTL/install/strip: phony external/PEGTL/CMakeFiles/install/stri
 # /home/ian/Desktop/compiler/CMakeLists.txt
 # =============================================================================
 
-
-#############################################
-# Utility command for intrinsics_gen
-
-build src/intrinsics_gen: phony
-
-
-#############################################
-# Utility command for omp_gen
-
-build src/omp_gen: phony
-
-
-#############################################
-# Utility command for acc_gen
-
-build src/acc_gen: phony
-
 # =============================================================================
 # Object build statements for EXECUTABLE target compiler
 
@@ -616,9 +616,10 @@ build src/acc_gen: phony
 #############################################
 # Order-only phony target for compiler
 
-build cmake_object_order_depends_target_compiler: phony || cmake_object_order_depends_target_Frontend cmake_object_order_depends_target_frontend_ast cmake_object_order_depends_target_frontend_parse cmake_object_order_depends_target_frontend_visitor
+build cmake_object_order_depends_target_compiler: phony || cmake_object_order_depends_target_frontend_ast cmake_object_order_depends_target_frontend_codegen cmake_object_order_depends_target_frontend_parse cmake_object_order_depends_target_frontend_types cmake_object_order_depends_target_frontend_visitor
 
 build src/CMakeFiles/compiler.dir/compiler.cpp.o: CXX_COMPILER__compiler_ /home/ian/Desktop/compiler/src/compiler.cpp || cmake_object_order_depends_target_compiler
+  DEFINES = -DBOOST_ALL_NO_LIB -DBOOST_PROGRAM_OPTIONS_DYN_LINK
   DEP_FILE = src/CMakeFiles/compiler.dir/compiler.cpp.o.d
   FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -Wall -std=gnu++20
   INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
@@ -631,14 +632,14 @@ build src/CMakeFiles/compiler.dir/compiler.cpp.o: CXX_COMPILER__compiler_ /home/
 
 
 #############################################
-# Link the executable src/compiler
+# Link the executable bin/compiler
 
-build src/compiler: CXX_EXECUTABLE_LINKER__compiler_ src/CMakeFiles/compiler.dir/compiler.cpp.o | src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a src/frontend/ast/libfrontend_ast.a /usr/lib/llvm-15/lib/libLLVM-15.so.1 || src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  LINK_LIBRARIES = -Wl,-rpath,/usr/lib/llvm-15/lib  src/frontend/libFrontend.a  src/frontend/parse/libfrontend_parse.a  src/frontend/visitor/libfrontend_visitor.a  src/frontend/ast/libfrontend_ast.a  /usr/lib/llvm-15/lib/libLLVM-15.so.1
+build bin/compiler: CXX_EXECUTABLE_LINKER__compiler_ src/CMakeFiles/compiler.dir/compiler.cpp.o | src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/types/libfrontend_types.a /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.74.0 src/frontend/visitor/libfrontend_visitor.a src/frontend/ast/libfrontend_ast.a /usr/lib/llvm-15/lib/libLLVM-15.so.1 || src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  LINK_LIBRARIES = -Wl,-rpath,/usr/lib/llvm-15/lib  src/frontend/parse/libfrontend_parse.a  src/frontend/visitor/libfrontend_visitor.a  src/frontend/ast/libfrontend_ast.a  src/frontend/codegen/libfrontend_codegen.a  src/frontend/types/libfrontend_types.a  /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.74.0  src/frontend/visitor/libfrontend_visitor.a  src/frontend/ast/libfrontend_ast.a  /usr/lib/llvm-15/lib/libLLVM-15.so.1
   OBJECT_DIR = src/CMakeFiles/compiler.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = src/compiler
+  TARGET_FILE = bin/compiler
   TARGET_PDB = compiler.dbg
 
 
@@ -722,44 +723,6 @@ build src/install/strip: phony src/CMakeFiles/install/strip.util
 # Write statements declared in CMakeLists.txt:
 # /home/ian/Desktop/compiler/src/CMakeLists.txt
 # =============================================================================
-
-# =============================================================================
-# Object build statements for STATIC_LIBRARY target Frontend
-
-
-#############################################
-# Order-only phony target for Frontend
-
-build cmake_object_order_depends_target_Frontend: phony || cmake_object_order_depends_target_frontend_ast cmake_object_order_depends_target_frontend_parse cmake_object_order_depends_target_frontend_visitor
-
-build src/frontend/CMakeFiles/Frontend.dir/code_generator.cpp.o: CXX_COMPILER__Frontend_ /home/ian/Desktop/compiler/src/frontend/code_generator.cpp || cmake_object_order_depends_target_Frontend
-  DEP_FILE = src/frontend/CMakeFiles/Frontend.dir/code_generator.cpp.o.d
-  FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -std=gnu++20
-  INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
-  OBJECT_DIR = src/frontend/CMakeFiles/Frontend.dir
-  OBJECT_FILE_DIR = src/frontend/CMakeFiles/Frontend.dir
-
-build src/frontend/CMakeFiles/Frontend.dir/VarType.cpp.o: CXX_COMPILER__Frontend_ /home/ian/Desktop/compiler/src/frontend/VarType.cpp || cmake_object_order_depends_target_Frontend
-  DEP_FILE = src/frontend/CMakeFiles/Frontend.dir/VarType.cpp.o.d
-  FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -std=gnu++20
-  INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
-  OBJECT_DIR = src/frontend/CMakeFiles/Frontend.dir
-  OBJECT_FILE_DIR = src/frontend/CMakeFiles/Frontend.dir
-
-
-# =============================================================================
-# Link build statements for STATIC_LIBRARY target Frontend
-
-
-#############################################
-# Link the static library src/frontend/libFrontend.a
-
-build src/frontend/libFrontend.a: CXX_STATIC_LIBRARY_LINKER__Frontend_ src/frontend/CMakeFiles/Frontend.dir/code_generator.cpp.o src/frontend/CMakeFiles/Frontend.dir/VarType.cpp.o || src/frontend/ast/libfrontend_ast.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a /usr/lib/llvm-15/lib/libLLVM-15.so.1
-  OBJECT_DIR = src/frontend/CMakeFiles/Frontend.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = src/frontend/libFrontend.a
-  TARGET_PDB = Frontend.a.dbg
 
 
 #############################################
@@ -1200,6 +1163,232 @@ build src/frontend/ast/install/strip: phony src/frontend/ast/CMakeFiles/install/
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
+# /home/ian/Desktop/compiler/src/frontend/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target frontend_codegen
+
+
+#############################################
+# Order-only phony target for frontend_codegen
+
+build cmake_object_order_depends_target_frontend_codegen: phony || cmake_object_order_depends_target_frontend_ast cmake_object_order_depends_target_frontend_types cmake_object_order_depends_target_frontend_visitor
+
+build src/frontend/codegen/CMakeFiles/frontend_codegen.dir/code_generator.cpp.o: CXX_COMPILER__frontend_codegen_ /home/ian/Desktop/compiler/src/frontend/codegen/code_generator.cpp || cmake_object_order_depends_target_frontend_codegen
+  DEP_FILE = src/frontend/codegen/CMakeFiles/frontend_codegen.dir/code_generator.cpp.o.d
+  FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -std=gnu++20
+  INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
+  OBJECT_DIR = src/frontend/codegen/CMakeFiles/frontend_codegen.dir
+  OBJECT_FILE_DIR = src/frontend/codegen/CMakeFiles/frontend_codegen.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target frontend_codegen
+
+
+#############################################
+# Link the static library src/frontend/codegen/libfrontend_codegen.a
+
+build src/frontend/codegen/libfrontend_codegen.a: CXX_STATIC_LIBRARY_LINKER__frontend_codegen_ src/frontend/codegen/CMakeFiles/frontend_codegen.dir/code_generator.cpp.o || src/frontend/ast/libfrontend_ast.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a /usr/lib/llvm-15/lib/libLLVM-15.so.1
+  OBJECT_DIR = src/frontend/codegen/CMakeFiles/frontend_codegen.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = src/frontend/codegen/libfrontend_codegen.a
+  TARGET_PDB = frontend_codegen.a.dbg
+
+
+#############################################
+# Utility command for test
+
+build src/frontend/codegen/CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/ctest --force-new-ctest-process
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build src/frontend/codegen/test: phony src/frontend/codegen/CMakeFiles/test.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build src/frontend/codegen/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build src/frontend/codegen/edit_cache: phony src/frontend/codegen/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build src/frontend/codegen/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/cmake --regenerate-during-build -S/home/ian/Desktop/compiler -B/home/ian/Desktop/compiler/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build src/frontend/codegen/rebuild_cache: phony src/frontend/codegen/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Utility command for list_install_components
+
+build src/frontend/codegen/list_install_components: phony
+
+
+#############################################
+# Utility command for install
+
+build src/frontend/codegen/CMakeFiles/install.util: CUSTOM_COMMAND src/frontend/codegen/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/cmake -P cmake_install.cmake
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build src/frontend/codegen/install: phony src/frontend/codegen/CMakeFiles/install.util
+
+
+#############################################
+# Utility command for install/local
+
+build src/frontend/codegen/CMakeFiles/install/local.util: CUSTOM_COMMAND src/frontend/codegen/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build src/frontend/codegen/install/local: phony src/frontend/codegen/CMakeFiles/install/local.util
+
+
+#############################################
+# Utility command for install/strip
+
+build src/frontend/codegen/CMakeFiles/install/strip.util: CUSTOM_COMMAND src/frontend/codegen/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/codegen && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  DESC = Installing the project stripped...
+  pool = console
+  restat = 1
+
+build src/frontend/codegen/install/strip: phony src/frontend/codegen/CMakeFiles/install/strip.util
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/ian/Desktop/compiler/src/frontend/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target frontend_types
+
+
+#############################################
+# Order-only phony target for frontend_types
+
+build cmake_object_order_depends_target_frontend_types: phony || src/frontend/types/CMakeFiles/frontend_types.dir
+
+build src/frontend/types/CMakeFiles/frontend_types.dir/VarType.cpp.o: CXX_COMPILER__frontend_types_ /home/ian/Desktop/compiler/src/frontend/types/VarType.cpp || cmake_object_order_depends_target_frontend_types
+  DEP_FILE = src/frontend/types/CMakeFiles/frontend_types.dir/VarType.cpp.o.d
+  FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -std=gnu++20
+  INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
+  OBJECT_DIR = src/frontend/types/CMakeFiles/frontend_types.dir
+  OBJECT_FILE_DIR = src/frontend/types/CMakeFiles/frontend_types.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target frontend_types
+
+
+#############################################
+# Link the static library src/frontend/types/libfrontend_types.a
+
+build src/frontend/types/libfrontend_types.a: CXX_STATIC_LIBRARY_LINKER__frontend_types_ src/frontend/types/CMakeFiles/frontend_types.dir/VarType.cpp.o || /usr/lib/llvm-15/lib/libLLVM-15.so.1
+  OBJECT_DIR = src/frontend/types/CMakeFiles/frontend_types.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = src/frontend/types/libfrontend_types.a
+  TARGET_PDB = frontend_types.a.dbg
+
+
+#############################################
+# Utility command for test
+
+build src/frontend/types/CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/ctest --force-new-ctest-process
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build src/frontend/types/test: phony src/frontend/types/CMakeFiles/test.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build src/frontend/types/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build src/frontend/types/edit_cache: phony src/frontend/types/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build src/frontend/types/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/cmake --regenerate-during-build -S/home/ian/Desktop/compiler -B/home/ian/Desktop/compiler/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build src/frontend/types/rebuild_cache: phony src/frontend/types/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Utility command for list_install_components
+
+build src/frontend/types/list_install_components: phony
+
+
+#############################################
+# Utility command for install
+
+build src/frontend/types/CMakeFiles/install.util: CUSTOM_COMMAND src/frontend/types/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/cmake -P cmake_install.cmake
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build src/frontend/types/install: phony src/frontend/types/CMakeFiles/install.util
+
+
+#############################################
+# Utility command for install/local
+
+build src/frontend/types/CMakeFiles/install/local.util: CUSTOM_COMMAND src/frontend/types/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build src/frontend/types/install/local: phony src/frontend/types/CMakeFiles/install/local.util
+
+
+#############################################
+# Utility command for install/strip
+
+build src/frontend/types/CMakeFiles/install/strip.util: CUSTOM_COMMAND src/frontend/types/all
+  COMMAND = cd /home/ian/Desktop/compiler/build/src/frontend/types && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  DESC = Installing the project stripped...
+  pool = console
+  restat = 1
+
+build src/frontend/types/install/strip: phony src/frontend/types/CMakeFiles/install/strip.util
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
 # /home/ian/Desktop/compiler/CMakeLists.txt
 # =============================================================================
 
@@ -1207,38 +1396,38 @@ build src/frontend/ast/install/strip: phony src/frontend/ast/CMakeFiles/install/
 #############################################
 # Utility command for build_tests
 
-build tests/build_tests: phony tests/CMakeFiles/build_tests tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o src/compiler
+build tests/build_tests: phony tests/CMakeFiles/build_tests tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o bin/compiler
 
 # =============================================================================
-# Object build statements for EXECUTABLE target RunTests
+# Object build statements for EXECUTABLE target run-tests
 
 
 #############################################
-# Order-only phony target for RunTests
+# Order-only phony target for run-tests
 
-build cmake_object_order_depends_target_RunTests: phony || cmake_object_order_depends_target_Frontend cmake_object_order_depends_target_frontend_ast cmake_object_order_depends_target_frontend_parse cmake_object_order_depends_target_frontend_visitor src/compiler tests/build_tests tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o
+build cmake_object_order_depends_target_run-tests: phony || bin/compiler tests/build_tests tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o
 
-build tests/CMakeFiles/RunTests.dir/RunTests.cpp.o: CXX_COMPILER__RunTests_ /home/ian/Desktop/compiler/tests/RunTests.cpp || cmake_object_order_depends_target_RunTests
-  DEP_FILE = tests/CMakeFiles/RunTests.dir/RunTests.cpp.o.d
-  FLAGS = -std=gnu++20
-  OBJECT_DIR = tests/CMakeFiles/RunTests.dir
-  OBJECT_FILE_DIR = tests/CMakeFiles/RunTests.dir
+build tests/CMakeFiles/run-tests.dir/RunTests.cpp.o: CXX_COMPILER__run-tests_ /home/ian/Desktop/compiler/tests/RunTests.cpp || cmake_object_order_depends_target_run-tests
+  DEP_FILE = tests/CMakeFiles/run-tests.dir/RunTests.cpp.o.d
+  FLAGS = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -std=gnu++20
+  INCLUDES = -I/usr/lib/llvm-15/include -I/home/ian/Desktop/compiler/include
+  OBJECT_DIR = tests/CMakeFiles/run-tests.dir
+  OBJECT_FILE_DIR = tests/CMakeFiles/run-tests.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target RunTests
+# Link build statements for EXECUTABLE target run-tests
 
 
 #############################################
-# Link the executable tests/RunTests
+# Link the executable bin/run-tests
 
-build tests/RunTests: CXX_EXECUTABLE_LINKER__RunTests_ tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o tests/CMakeFiles/RunTests.dir/RunTests.cpp.o | src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a src/frontend/ast/libfrontend_ast.a /usr/lib/llvm-15/lib/libLLVM-15.so.1 || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a tests/build_tests
-  LINK_LIBRARIES = -Wl,-rpath,/usr/lib/llvm-15/lib  src/frontend/libFrontend.a  src/frontend/parse/libfrontend_parse.a  src/frontend/visitor/libfrontend_visitor.a  src/frontend/ast/libfrontend_ast.a  /usr/lib/llvm-15/lib/libLLVM-15.so.1
-  OBJECT_DIR = tests/CMakeFiles/RunTests.dir
+build bin/run-tests: CXX_EXECUTABLE_LINKER__run-tests_ tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o tests/CMakeFiles/run-tests.dir/RunTests.cpp.o || bin/compiler tests/build_tests
+  OBJECT_DIR = tests/CMakeFiles/run-tests.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = tests/RunTests
-  TARGET_PDB = RunTests.dbg
+  TARGET_FILE = bin/run-tests
+  TARGET_PDB = run-tests.dbg
 
 
 #############################################
@@ -1321,14 +1510,14 @@ build tests/install/strip: phony tests/CMakeFiles/install/strip.util
 #############################################
 # Phony custom command for tests/CMakeFiles/build_tests
 
-build tests/CMakeFiles/build_tests | ${cmake_ninja_workdir}tests/CMakeFiles/build_tests: phony tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
+build tests/CMakeFiles/build_tests | ${cmake_ninja_workdir}tests/CMakeFiles/build_tests: phony tests/minitests-testee.o tests/test1-testee.o tests/test2-testee.o tests/test3-testee.o tests/test4-testee.o || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
 
 
 #############################################
 # Custom command for tests/minitests-testee.o
 
-build tests/minitests-testee.o | ${cmake_ninja_workdir}tests/minitests-testee.o: CUSTOM_COMMAND ../tests/minitests.program src/compiler || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/src/compiler minitests.program /home/ian/Desktop/compiler/build/tests/minitests-testee.o
+build tests/minitests-testee.o | ${cmake_ninja_workdir}tests/minitests-testee.o: CUSTOM_COMMAND ../tests/minitests.program bin/compiler || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/bin/compiler -i minitests.program -o /home/ian/Desktop/compiler/build/tests/minitests-testee.o
   DESC = Generating object files from program files
   restat = 1
 
@@ -1336,8 +1525,8 @@ build tests/minitests-testee.o | ${cmake_ninja_workdir}tests/minitests-testee.o:
 #############################################
 # Custom command for tests/test1-testee.o
 
-build tests/test1-testee.o | ${cmake_ninja_workdir}tests/test1-testee.o: CUSTOM_COMMAND ../tests/test1.program src/compiler || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/src/compiler test1.program /home/ian/Desktop/compiler/build/tests/test1-testee.o
+build tests/test1-testee.o | ${cmake_ninja_workdir}tests/test1-testee.o: CUSTOM_COMMAND ../tests/test1.program bin/compiler || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/bin/compiler -i test1.program -o /home/ian/Desktop/compiler/build/tests/test1-testee.o
   DESC = Generating object files from program files
   restat = 1
 
@@ -1345,8 +1534,8 @@ build tests/test1-testee.o | ${cmake_ninja_workdir}tests/test1-testee.o: CUSTOM_
 #############################################
 # Custom command for tests/test2-testee.o
 
-build tests/test2-testee.o | ${cmake_ninja_workdir}tests/test2-testee.o: CUSTOM_COMMAND ../tests/test2.program src/compiler || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/src/compiler test2.program /home/ian/Desktop/compiler/build/tests/test2-testee.o
+build tests/test2-testee.o | ${cmake_ninja_workdir}tests/test2-testee.o: CUSTOM_COMMAND ../tests/test2.program bin/compiler || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/bin/compiler -i test2.program -o /home/ian/Desktop/compiler/build/tests/test2-testee.o
   DESC = Generating object files from program files
   restat = 1
 
@@ -1354,8 +1543,8 @@ build tests/test2-testee.o | ${cmake_ninja_workdir}tests/test2-testee.o: CUSTOM_
 #############################################
 # Custom command for tests/test3-testee.o
 
-build tests/test3-testee.o | ${cmake_ninja_workdir}tests/test3-testee.o: CUSTOM_COMMAND ../tests/test3.program src/compiler || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/src/compiler test3.program /home/ian/Desktop/compiler/build/tests/test3-testee.o
+build tests/test3-testee.o | ${cmake_ninja_workdir}tests/test3-testee.o: CUSTOM_COMMAND ../tests/test3.program bin/compiler || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/bin/compiler -i test3.program -o /home/ian/Desktop/compiler/build/tests/test3-testee.o
   DESC = Generating object files from program files
   restat = 1
 
@@ -1363,41 +1552,39 @@ build tests/test3-testee.o | ${cmake_ninja_workdir}tests/test3-testee.o: CUSTOM_
 #############################################
 # Custom command for tests/test4-testee.o
 
-build tests/test4-testee.o | ${cmake_ninja_workdir}tests/test4-testee.o: CUSTOM_COMMAND ../tests/test4.program src/compiler || src/compiler src/frontend/ast/libfrontend_ast.a src/frontend/libFrontend.a src/frontend/parse/libfrontend_parse.a src/frontend/visitor/libfrontend_visitor.a
-  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/src/compiler test4.program /home/ian/Desktop/compiler/build/tests/test4-testee.o
+build tests/test4-testee.o | ${cmake_ninja_workdir}tests/test4-testee.o: CUSTOM_COMMAND ../tests/test4.program bin/compiler || bin/compiler src/frontend/ast/libfrontend_ast.a src/frontend/codegen/libfrontend_codegen.a src/frontend/parse/libfrontend_parse.a src/frontend/types/libfrontend_types.a src/frontend/visitor/libfrontend_visitor.a
+  COMMAND = cd /home/ian/Desktop/compiler/tests && /home/ian/Desktop/compiler/build/bin/compiler -i test4.program -o /home/ian/Desktop/compiler/build/tests/test4-testee.o
   DESC = Generating object files from program files
   restat = 1
 
 # =============================================================================
 # Target aliases.
 
-build Frontend: phony src/frontend/libFrontend.a
-
-build RunTests: phony tests/RunTests
-
-build acc_gen: phony src/acc_gen
-
 build build_tests: phony tests/build_tests
 
-build compiler: phony src/compiler
+build compiler: phony bin/compiler
 
 build frontend_ast: phony src/frontend/ast/libfrontend_ast.a
 
+build frontend_codegen: phony src/frontend/codegen/libfrontend_codegen.a
+
 build frontend_parse: phony src/frontend/parse/libfrontend_parse.a
+
+build frontend_types: phony src/frontend/types/libfrontend_types.a
 
 build frontend_visitor: phony src/frontend/visitor/libfrontend_visitor.a
 
-build intrinsics_gen: phony src/intrinsics_gen
-
-build libFrontend.a: phony src/frontend/libFrontend.a
-
 build libfrontend_ast.a: phony src/frontend/ast/libfrontend_ast.a
+
+build libfrontend_codegen.a: phony src/frontend/codegen/libfrontend_codegen.a
 
 build libfrontend_parse.a: phony src/frontend/parse/libfrontend_parse.a
 
+build libfrontend_types.a: phony src/frontend/types/libfrontend_types.a
+
 build libfrontend_visitor.a: phony src/frontend/visitor/libfrontend_visitor.a
 
-build omp_gen: phony src/omp_gen
+build run-tests: phony bin/run-tests
 
 # =============================================================================
 # Folder targets.
@@ -1421,14 +1608,14 @@ build external/PEGTL/all: phony
 #############################################
 # Folder: /home/ian/Desktop/compiler/build/src
 
-build src/all: phony src/compiler src/frontend/all
+build src/all: phony bin/compiler src/frontend/all
 
 # =============================================================================
 
 #############################################
 # Folder: /home/ian/Desktop/compiler/build/src/frontend
 
-build src/frontend/all: phony src/frontend/libFrontend.a src/frontend/parse/all src/frontend/visitor/all src/frontend/ast/all
+build src/frontend/all: phony src/frontend/parse/all src/frontend/visitor/all src/frontend/ast/all src/frontend/codegen/all src/frontend/types/all
 
 # =============================================================================
 
@@ -1440,9 +1627,23 @@ build src/frontend/ast/all: phony src/frontend/ast/libfrontend_ast.a
 # =============================================================================
 
 #############################################
+# Folder: /home/ian/Desktop/compiler/build/src/frontend/codegen
+
+build src/frontend/codegen/all: phony src/frontend/codegen/libfrontend_codegen.a
+
+# =============================================================================
+
+#############################################
 # Folder: /home/ian/Desktop/compiler/build/src/frontend/parse
 
 build src/frontend/parse/all: phony src/frontend/parse/libfrontend_parse.a
+
+# =============================================================================
+
+#############################################
+# Folder: /home/ian/Desktop/compiler/build/src/frontend/types
+
+build src/frontend/types/all: phony src/frontend/types/libfrontend_types.a
 
 # =============================================================================
 
@@ -1456,7 +1657,7 @@ build src/frontend/visitor/all: phony src/frontend/visitor/libfrontend_visitor.a
 #############################################
 # Folder: /home/ian/Desktop/compiler/build/tests
 
-build tests/all: phony tests/build_tests tests/RunTests
+build tests/all: phony tests/build_tests bin/run-tests
 
 # =============================================================================
 # Built-in targets
@@ -1465,14 +1666,14 @@ build tests/all: phony tests/build_tests tests/RunTests
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../external/PEGTL/.cmake/pegtl-config.cmake.in ../external/PEGTL/CMakeLists.txt ../src/CMakeLists.txt ../src/frontend/CMakeLists.txt ../src/frontend/ast/CMakeLists.txt ../src/frontend/parse/CMakeLists.txt ../src/frontend/visitor/CMakeLists.txt ../tests/CMakeLists.txt /usr/lib/llvm-15/cmake/FindFFI.cmake /usr/lib/llvm-15/cmake/FindTerminfo.cmake /usr/lib/llvm-15/cmake/LLVMConfig.cmake /usr/lib/llvm-15/cmake/LLVMConfigVersion.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVM-Config.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports-release.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports.cmake /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakePushCheckState.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CTest.cmake /usr/share/cmake-3.22/Modules/CTestTargets.cmake /usr/share/cmake-3.22/Modules/CTestUseLaunchers.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/DartConfiguration.tcl.in /usr/share/cmake-3.22/Modules/FindLibXml2.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindPkgConfig.cmake /usr/share/cmake-3.22/Modules/FindZLIB.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/SelectLibraryConfigurations.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../external/PEGTL/.cmake/pegtl-config.cmake.in ../external/PEGTL/CMakeLists.txt ../src/CMakeLists.txt ../src/frontend/CMakeLists.txt ../src/frontend/ast/CMakeLists.txt ../src/frontend/codegen/CMakeLists.txt ../src/frontend/parse/CMakeLists.txt ../src/frontend/types/CMakeLists.txt ../src/frontend/visitor/CMakeLists.txt ../tests/CMakeLists.txt /usr/lib/llvm-15/cmake/FindFFI.cmake /usr/lib/llvm-15/cmake/FindTerminfo.cmake /usr/lib/llvm-15/cmake/LLVMConfig.cmake /usr/lib/llvm-15/cmake/LLVMConfigVersion.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVM-Config.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports-release.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.74.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/boost_program_options-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/boost_program_options-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/libboost_program_options-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/libboost_program_options-variant-static.cmake /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakePushCheckState.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CTest.cmake /usr/share/cmake-3.22/Modules/CTestTargets.cmake /usr/share/cmake-3.22/Modules/CTestUseLaunchers.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/DartConfiguration.tcl.in /usr/share/cmake-3.22/Modules/FindBoost.cmake /usr/share/cmake-3.22/Modules/FindLibXml2.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindPkgConfig.cmake /usr/share/cmake-3.22/Modules/FindZLIB.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/SelectLibraryConfigurations.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt ../external/PEGTL/.cmake/pegtl-config.cmake.in ../external/PEGTL/CMakeLists.txt ../src/CMakeLists.txt ../src/frontend/CMakeLists.txt ../src/frontend/ast/CMakeLists.txt ../src/frontend/parse/CMakeLists.txt ../src/frontend/visitor/CMakeLists.txt ../tests/CMakeLists.txt /usr/lib/llvm-15/cmake/FindFFI.cmake /usr/lib/llvm-15/cmake/FindTerminfo.cmake /usr/lib/llvm-15/cmake/LLVMConfig.cmake /usr/lib/llvm-15/cmake/LLVMConfigVersion.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVM-Config.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports-release.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports.cmake /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakePushCheckState.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CTest.cmake /usr/share/cmake-3.22/Modules/CTestTargets.cmake /usr/share/cmake-3.22/Modules/CTestUseLaunchers.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/DartConfiguration.tcl.in /usr/share/cmake-3.22/Modules/FindLibXml2.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindPkgConfig.cmake /usr/share/cmake-3.22/Modules/FindZLIB.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/SelectLibraryConfigurations.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake: phony
+build ../CMakeLists.txt ../external/PEGTL/.cmake/pegtl-config.cmake.in ../external/PEGTL/CMakeLists.txt ../src/CMakeLists.txt ../src/frontend/CMakeLists.txt ../src/frontend/ast/CMakeLists.txt ../src/frontend/codegen/CMakeLists.txt ../src/frontend/parse/CMakeLists.txt ../src/frontend/types/CMakeLists.txt ../src/frontend/visitor/CMakeLists.txt ../tests/CMakeLists.txt /usr/lib/llvm-15/cmake/FindFFI.cmake /usr/lib/llvm-15/cmake/FindTerminfo.cmake /usr/lib/llvm-15/cmake/LLVMConfig.cmake /usr/lib/llvm-15/cmake/LLVMConfigVersion.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVM-Config.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports-release.cmake /usr/lib/llvm-15/lib/cmake/llvm/LLVMExports.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.74.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/boost_program_options-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/boost_program_options-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/libboost_program_options-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0/libboost_program_options-variant-static.cmake /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakePushCheckState.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CTest.cmake /usr/share/cmake-3.22/Modules/CTestTargets.cmake /usr/share/cmake-3.22/Modules/CTestUseLaunchers.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/DartConfiguration.tcl.in /usr/share/cmake-3.22/Modules/FindBoost.cmake /usr/share/cmake-3.22/Modules/FindLibXml2.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindPkgConfig.cmake /usr/share/cmake-3.22/Modules/FindZLIB.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/SelectLibraryConfigurations.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake: phony
 
 
 #############################################

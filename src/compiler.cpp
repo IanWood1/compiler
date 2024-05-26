@@ -1,30 +1,36 @@
+#include <llvm/Support/CommandLine.h>
 #include "frontend/ast.h"
 #include "frontend/code_generator.h"
 #include "frontend/parse/parser.h"
 #include "frontend/visitor/ApplyTypesBuilder.h"
 #include "frontend/visitor/DumpAST.h"
 
+#include <string>
+
+bool enableDebug;
+
 int main(int argc, char** argv) {
-  // TODO: parse command line arguments
-  [[maybe_unused]] bool enable_code_generator;
-  if (true) {
-    std::string input_fname = "../../test.program";
-    if (argc > 1) {
-      input_fname = argv[1];
-    }
-    frontend::Program p = frontend::parse_file(input_fname.c_str());
-    frontend::DumpAST dump_ast;
-    frontend::ApplyTypesBuilder builder;
-    p = builder.build_program(p);
+
+  llvm::cl::opt<std::string> output_filename(
+      "o", llvm::cl::desc("Specify output filename"),
+      llvm::cl::value_desc("filename"));
+  llvm::cl::opt<std::string> input_filename(
+      "i", llvm::cl::desc("Specify desc filename"),
+      llvm::cl::value_desc("filename"));
+  llvm::cl::opt<bool, true> debug("d", llvm::cl::desc("Print debug output"),
+                                  llvm::cl::Hidden,
+                                  llvm::cl::location(enableDebug));
+  llvm::cl::ParseCommandLineOptions(argc, argv);
+
+  frontend::Program p = frontend::parse_file(input_filename.c_str());
+  frontend::DumpAST dump_ast;
+  frontend::ApplyTypesBuilder builder;
+  p = builder.build_program(p);
+  if (enableDebug) {
     dump_ast.dump_program(p);
-    //    exit(0);
-    frontend::CodeGenerator cg;
-    std::string output_fname = "output.o";
-    if (argc > 2) {
-      output_fname = argv[2];
-    }
-    cg.generate_code(p, output_fname);
   }
+  frontend::CodeGenerator cg;
+  cg.generate_code(p, output_filename);
 
   return 0;
 }
