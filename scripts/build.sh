@@ -5,7 +5,7 @@ echo "Started building Release CMAKE files..."
 # Clearing build folder if it exists
 rm -r build/ &> /dev/null
 
-cmake -G Ninja -B build
+cmake -B build
 RESULT=$?
 if [ "$RESULT" -ne 0 ]; then
     exit $RESULT
@@ -26,3 +26,4 @@ cmake --build build/ -j$cpu_count
 RESULT=$?
 echo "Finished building Release!"
 exit $RESULT
+
