@@ -12,14 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v4
+    
+    - name: checkout repository
+      uses: actions/checkout@v2
+      with:
+        submodules: true  # Ensure git submodules are checked out
+    
     - name: Setup sccache
       uses: hendrikmuhs/ccache-action@main
       with:
         key: ${{ github.job }}
         max-size: 1000M
         variant: sccache
+
+    - name: Set up LLVM
+      run: sudo apt-get install -y llvm
+
     - name: build
       run: ./scripts/build.sh
+    
     - name: test
       run: ./scripts/test.sh
