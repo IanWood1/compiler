@@ -66,8 +66,7 @@ void DumpAST::visit(const ast::FunctionCall* call) {
   prefix_ = saved_prefix;
 }
 void DumpAST::visit(const ast::ArrayAccess* access) {
-  stream_ << "array access"
-          << " type: " << access->type->get_type_name();
+  stream_ << "array access" << " type: " << access->type->get_type_name();
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*access->var);
@@ -75,8 +74,7 @@ void DumpAST::visit(const ast::ArrayAccess* access) {
   prefix_ = saved_prefix;
 }
 void DumpAST::visit(const ast::ArrayAllocate* alloc) {
-  stream_ << "array allocate"
-          << " type: " << alloc->type->get_type_name();
+  stream_ << "array allocate" << " type: " << alloc->type->get_type_name();
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*alloc->length);

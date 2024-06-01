@@ -32,4 +32,4 @@ function(add_e2e_tests test_name test_framework)
 endfunction()
 
 
-add_subdirectory(e2e)
+

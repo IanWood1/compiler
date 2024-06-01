@@ -1,0 +1,45 @@
+#ifdef TokenTypeMacro
+TokenTypeMacro(Identifier)
+TokenTypeMacro(IntegerLiteral)
+TokenTypeMacro(EndOfFile)
+#undef TokenTypeMacro
+#endif 
+
+#ifdef SymbolMacro
+SymbolMacro(OpenBrace, '{')
+SymbolMacro(CloseBrace, '}')
+SymbolMacro(OpenParen, '(')
+SymbolMacro(CloseParen, ')')
+SymbolMacro(OpenBracket, '[')
+SymbolMacro(CloseBracket, ']')
+SymbolMacro(Comma, ',')
+#undef SymbolMacro
+#endif 
+
+#ifdef OperatorMacro
+OperatorMacro(Equal, "==")
+OperatorMacro(NotEqual, "!=")
+OperatorMacro(LessEqual, "<=")
+OperatorMacro(GreaterEqual, ">=")
+OperatorMacro(Less, "<")
+OperatorMacro(Greater, ">")
+OperatorMacro(Plus, "+")
+OperatorMacro(Minus, "-")
+OperatorMacro(Multiply, "*")
+OperatorMacro(Reference, "&")
+OperatorMacro(SemiColon, ";")
+OperatorMacro(Divide, "/")
+OperatorMacro(Modulo, "%")
+OperatorMacro(And, "&&")
+OperatorMacro(Or, "||")
+OperatorMacro(Not, "!")
+OperatorMacro(Assign, "=")
+OperatorMacro(AddAssign, "+=")
+OperatorMacro(SubtractAssign, "-=")
+OperatorMacro(MultiplyAssign, "*=")
+OperatorMacro(DivideAssign, "/=")
+OperatorMacro(ModuloAssign, "%=")
+OperatorMacro(Increment, "++")
+OperatorMacro(Decrement, "--")
+#undef OperatorMacro
+#endif

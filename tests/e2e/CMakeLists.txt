@@ -1,6 +1,6 @@
 
 add_e2e_tests(
-  globbed 
+  old_globbed 
   RunTests.cpp
   test1.program
   test2.program
