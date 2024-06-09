@@ -10,9 +10,9 @@
 #include <tao/pegtl.hpp>
 #include <tao/pegtl/contrib/analyze.hpp>
 #include <tao/pegtl/contrib/raw_string.hpp>
-#include "frontend/VarType.h"
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "frontend/diagnostic/debug.h"
+#include "frontend/types/VarType.h"
 
 #undef FIRING_DEBUG
 #ifdef FIRING_DEBUG

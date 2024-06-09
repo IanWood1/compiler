@@ -12,9 +12,9 @@
 #include <map>
 #include <vector>
 
-#include "frontend/VarType.h"
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "frontend/diagnostic/debug.h"
+#include "frontend/types/VarType.h"
 
 namespace frontend {
 namespace {

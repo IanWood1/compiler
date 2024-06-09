@@ -30,7 +30,7 @@
 #include <system_error>
 #include <vector>
 
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "frontend/diagnostic/debug.h"
 #include "frontend/visitor/IRInstructionGen.h"
 

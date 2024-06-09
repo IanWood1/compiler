@@ -3,8 +3,8 @@
 #include <llvm/IR/Instructions.h>
 #include <map>
 
-#include "../ast.h"
-#include "AbstractVisitorValue.h"
+#include "frontend/ast/ast.h"
+#include "frontend/visitor/AbstractVisitorValue.h"
 namespace llvm {
 class Type;
 class LLVMContext;

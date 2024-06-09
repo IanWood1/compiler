@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "visitor/IRInstructionGen.h"
 
 // forward declare llvm types to avoid including llvm headers

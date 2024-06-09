@@ -1,10 +1,9 @@
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 
 #include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
-#include <type_traits>
 #include <utility>
 #include <vector>
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "../ast.h"
 namespace frontend {
 // required forward declarations to avoid circular dependencies
 namespace ast {

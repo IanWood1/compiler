@@ -1,4 +1,4 @@
-#include "frontend/VarType.h"
+#include "frontend/types/VarType.h"
 
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/LLVMContext.h>

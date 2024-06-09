@@ -8,10 +8,10 @@
 #include <utility>
 #include <vector>
 
-#include "diagnostic/debug.h"
-#include "frontend/VarType.h"
-#include "visitor/AbstractVisitorInst.h"
-#include "visitor/AbstractVisitorValue.h"
+#include "frontend/diagnostic/debug.h"
+#include "frontend/types/VarType.h"
+#include "frontend/visitor/AbstractVisitorInst.h"
+#include "frontend/visitor/AbstractVisitorValue.h"
 
 namespace frontend {
 

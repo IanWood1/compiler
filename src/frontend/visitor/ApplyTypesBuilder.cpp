@@ -3,7 +3,7 @@
 //
 
 #include "frontend/visitor/ApplyTypesBuilder.h"
-#include "frontend/VarType.h"
+#include "frontend/types/VarType.h"
 
 namespace frontend {
 Program ApplyTypesBuilder::build_program(const Program& program) {

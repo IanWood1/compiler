@@ -2,9 +2,9 @@
 
 #include <map>
 
-#include "../ast.h"
-#include "AbstractVisitorInst.h"
-#include "IRValueGen.h"
+#include "frontend/ast/ast.h"
+#include "frontend/visitor/AbstractVisitorInst.h"
+#include "frontend/visitor/IRValueGen.h"
 
 // forward declare llvm types to avoid including llvm headers
 namespace llvm {
