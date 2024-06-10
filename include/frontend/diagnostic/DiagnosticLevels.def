@@ -1,0 +1,5 @@
+DiagnosticLevel(DEBUG)    
+DiagnosticLevel(INFO)    
+DiagnosticLevel(WARNING) 
+DiagnosticLevel(ERROR)  
+DiagnosticLevel(FATAL)

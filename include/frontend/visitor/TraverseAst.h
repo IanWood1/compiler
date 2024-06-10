@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
 #include <vector>
-#include "../ast.h"
 #include "AbstractVisitorInst.h"
 #include "AbstractVisitorValue.h"
+#include "frontend/ast/ast.h"
 
 namespace frontend {
 // Used during ast transformations since ast should be immutable

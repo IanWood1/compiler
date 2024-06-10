@@ -1,7 +1,7 @@
 add_custom_target(compiler_tests COMMENT "target to build tests")
 
 function(add_e2e_tests test_name test_framework)
-  set(e2e_test_name "test_e2e_${test_name}")
+  set(e2e_test_name "e2e_${test_name}")
   set(e2e_test_objects "")
 
   # Shift the first two arguments and process the remaining ones as source files

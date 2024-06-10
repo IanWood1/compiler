@@ -1,6 +1,6 @@
 #pragma once
-#include "../ast.h"
 #include "TraverseAst.h"
+#include "frontend/ast/ast.h"
 
 namespace frontend {
 

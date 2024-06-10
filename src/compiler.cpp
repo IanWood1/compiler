@@ -1,5 +1,5 @@
 #include <llvm/Support/CommandLine.h>
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "frontend/code_generator.h"
 #include "frontend/parse/parser.h"
 #include "frontend/visitor/ApplyTypesBuilder.h"

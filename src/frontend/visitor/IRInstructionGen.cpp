@@ -11,7 +11,7 @@
 #include <vector>
 
 #include <llvm/IR/Metadata.h>
-#include "frontend/ast.h"
+#include "frontend/ast/ast.h"
 #include "frontend/diagnostic/debug.h"
 
 namespace frontend {
