@@ -3,6 +3,7 @@
 //
 
 #include "frontend/visitor/ApplyTypesBuilder.h"
+#include <cassert>
 #include "frontend/types/VarType.h"
 
 namespace frontend {
@@ -63,7 +64,7 @@ ast::ConstValuePtr ApplyTypesBuilder::visit_val(const ast::FunctionCall& call,
 }
 ast::ConstValuePtr ApplyTypesBuilder::visit_val(const ast::ArrayAccess& access,
                                                 TraverseAst::TraversalState&) {
-  ASSERT(access.indices.size() == 1, "Only 1d array supported");
+  assert(access.indices.size() == 1 && "Only 1d array supported");
   std::vector<ast::ConstValuePtr> indices;
   indices.push_back(get(*access.indices.back()));
   auto new_access = std::make_shared<ast::ArrayAccess>(

@@ -795,7 +795,7 @@ Program parse_file(const char* file_name) {
   /*
    * Check the grammar for some possible issues.
    */
-  pegtl::analyze<parser::grammar>();
+  // assert(pegtl::analyze<parser::grammar>());
 
   /*
    * Parse.

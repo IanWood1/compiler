@@ -11,10 +11,10 @@ bool enableDebug;
 
 int main(int argc, char** argv) {
 
-  llvm::cl::opt<std::string> output_filename(
+  llvm::cl::opt<std::string> outputFilename(
       "o", llvm::cl::desc("Specify output filename"),
       llvm::cl::value_desc("filename"));
-  llvm::cl::opt<std::string> input_filename(
+  llvm::cl::opt<std::string> inputFilename(
       "i", llvm::cl::desc("Specify desc filename"),
       llvm::cl::value_desc("filename"));
   llvm::cl::opt<bool, true> debug("d", llvm::cl::desc("Print debug output"),
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
                                   llvm::cl::location(enableDebug));
   llvm::cl::ParseCommandLineOptions(argc, argv);
 
-  frontend::Program p = frontend::parse_file(input_filename.c_str());
+  frontend::Program p = frontend::parse_file(inputFilename.c_str());
   frontend::DumpAST dump_ast;
   frontend::ApplyTypesBuilder builder;
   p = builder.build_program(p);
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     dump_ast.dump_program(p);
   }
   frontend::CodeGenerator cg;
-  cg.generate_code(p, output_filename);
+  cg.generate_code(p, outputFilename);
 
   return 0;
 }

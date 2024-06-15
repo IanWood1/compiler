@@ -67,12 +67,8 @@ void CodeGenerator::llvm_verify_generated_ir() const {
   DEBUG_PRINT("==========================================\n");
   DEBUG_PRINT("Verifying correctness of generated LLVM IR\n");
   bool is_error = llvm::verifyModule(module_, &llvm::errs());
-  if (is_error) {
-    std::cout << "error: generated LLVM IR is not correct" << std::endl;
-    exit(1);
-  } else {
-    std::cout << "passed!\n";
-  }
+  (void)is_error;
+  assert(!is_error);
 }
 
 void CodeGenerator::llvm_optim_pass() {
@@ -140,14 +136,12 @@ void CodeGenerator::llvm_codegen_pass(const std::string& filename,
   llvm::legacy::PassManager pass;
 
   if (target_machine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
-    llvm::errs() << "target_machine can't emit a file of this type\n";
+    FRONTEND_ERROR("target_machine can't emit a file of this type\n");
     exit(1);
   }
 
   pass.run(module_);
   dest.flush();
-
-  llvm::outs() << "Wrote " << filename << "\n";
 }
 
 void CodeGenerator::generate_llvm_ir(const ast::FunctionPtr& f,
