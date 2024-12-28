@@ -35,7 +35,10 @@ include(CTest)
 # Add source to this project's executable. 
 add_subdirectory(external/PEGTL EXCLUDE_FROM_ALL)
 
-find_package(LLVM REQUIRED CONFIG)
+# Only allow LLVM version 17.0.0
+set(LLVM_VERSION 15.0.6)
+
+find_package(LLVM ${LLVM_VERSION} REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 message(STATUS "LLVM libraries: ${LLVM_LIBRARIES}")
