@@ -25,11 +25,14 @@ jobs:
         max-size: 1000M
         variant: sccache
 
-    - name: Set up LLVM
-      run: sudo apt-get install -y llvm
+    - name: Set up dependencies
+      run: |
+        sudo apt update
+        sudo apt install llvm-15-dev ninja-build cmake clang -y
 
-    - name: build
+
+    - name: Build
       run: ./scripts/build.sh
     
-    - name: test
+    - name: Test
       run: ./scripts/test.sh
