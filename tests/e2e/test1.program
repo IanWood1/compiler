@@ -13,7 +13,7 @@ int64[5] elemAdd(int64[5] src1, int64[5] src2, int64[5] dst, int64 len){
 }
 
 int64[5] memcpyArr(int64[5] dst, int64[5] src, int64 len){
-  int64 i 
+  int64 i
   i = 0
   while(i < len){
     dst[i] = src[i]
@@ -34,13 +34,13 @@ int64 sum(int64[5] vec, int64 len){
   return ret
 }
 
-void swap(int64[5] vec1, int64[5] vec2, int64 len){ 
+void swap(int64[5] vec1, int64[5] vec2, int64 len){
   int64[5] tmp
   tmp = [0;5]
   memcpyArr(tmp, vec1, len)
   memcpyArr(vec1, vec2, len)
   memcpyArr(vec2, tmp, len)
-  return 
+  return
 }
 
 int64 doNothingButTestParse(int64[5] vec1, int64[5] vec2, int64 len){
@@ -67,8 +67,8 @@ int64 test1(int64[5] vec1, int64[5] vec2, int64 len){
 
 
 
-   
-  
+
+
 
   return sum(elemAdd(memcpyArr(new_vec1, vec1, len), memcpyArr(new_vec2, vec2, len), vec3, len), len) // comment
 

@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    
+
     - name: checkout repository
       uses: actions/checkout@v2
       with:
         submodules: true  # Ensure git submodules are checked out
-    
+
     - name: Setup sccache
       uses: hendrikmuhs/ccache-action@main
       with:
@@ -33,6 +33,6 @@ jobs:
 
     - name: Build
       run: ./scripts/build.sh
-    
+
     - name: Test
       run: ./scripts/test.sh

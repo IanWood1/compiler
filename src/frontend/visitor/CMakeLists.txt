@@ -3,7 +3,7 @@
 add_library(frontend_visitor
 
   ApplyTypesBuilder.cpp
-  DumpAST.cpp 
+  DumpAST.cpp
   IRInstructionGen.cpp
   IRValueGen.cpp
 

@@ -32,7 +32,7 @@ project("compiler")
 
 include(CTest)
 
-# Add source to this project's executable. 
+# Add source to this project's executable.
 add_subdirectory(external/PEGTL EXCLUDE_FROM_ALL)
 
 # Only allow LLVM version 17.0.0

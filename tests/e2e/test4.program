@@ -41,7 +41,3 @@ int64 test4(int64[10] arr1, int64[10] arr2){
     res = res + test4_compare(arr2, arr1)
     return res
 }
-
-
-
-
