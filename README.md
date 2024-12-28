@@ -23,7 +23,3 @@ List of TODOs can be found in the issues section of the GitHub repo.
 I'm new grad who is passionate building compilers and solving exciting problems. If you want to reach out or contribute
 to the project, don't hesitate to contact me by email: ianwood2024@u.northwestern.edu. You can also find me
 on [LinkedIn](https://www.linkedin.com/in/wood-ian).
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
