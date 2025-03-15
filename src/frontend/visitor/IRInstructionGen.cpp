@@ -31,14 +31,14 @@ llvm::Value* IRInstructionGen::get(const ast::Instruction& i) {
 
 void IRInstructionGen::visit(const ast::InstructionReturn* r) {
   if (r->val) {
-    if (r->val->type->is_array() || r->val->type->is_struct()) {
+    if (r->val->type->isArray() || r->val->type->isStruct()) {
       // must copy returned object into the last argument to the function
       llvm::Function* llvm_function = builder_.GetInsertBlock()->getParent();
       llvm::Argument* ret_arg = llvm_function->getArg(
           static_cast<unsigned int>(llvm_function->arg_size() - 1));
-      builder_.CreateMemCpy(
-          ret_arg, llvm::MaybeAlign(), value_gen_.get_loaded_val(r->val.get()),
-          llvm::MaybeAlign(), r->val->type->get_object_size());
+      builder_.CreateMemCpy(ret_arg, llvm::MaybeAlign(),
+                            value_gen_.get_loaded_val(r->val.get()),
+                            llvm::MaybeAlign(), r->val->type->getObjectSize());
       builder_.CreateRet(ret_arg);
       //    } else if (r->val->type->is_ref()) {
       //      // no need to load
@@ -58,12 +58,12 @@ void IRInstructionGen::visit(const ast::InstructionAssignment* a) {
   const ConstVarTypePtr& src_type = a->src->type;
   const ConstVarTypePtr& dst_type = a->dst->type;
 
-  bool prim_to_prim = src_type->is_primitive() && src_type->is_primitive();
-  bool ref_to_prim = src_type->is_ref() && dst_type->is_primitive();
-  bool stack_to_stack = src_type->is_stack() && dst_type->is_stack();
-  bool stack_to_ref = src_type->is_stack() && dst_type->is_ref();
-  bool ref_to_stack = src_type->is_ref() && dst_type->is_stack();
-  bool ref_to_ref = src_type->is_ref() && dst_type->is_ref();
+  bool prim_to_prim = src_type->isPrimitive() && src_type->isPrimitive();
+  bool ref_to_prim = src_type->isRef() && dst_type->isPrimitive();
+  bool stack_to_stack = src_type->isStack() && dst_type->isStack();
+  bool stack_to_ref = src_type->isStack() && dst_type->isRef();
+  bool ref_to_stack = src_type->isRef() && dst_type->isStack();
+  bool ref_to_ref = src_type->isRef() && dst_type->isRef();
 
   if (prim_to_prim || ref_to_prim) {
     // just store
@@ -71,8 +71,7 @@ void IRInstructionGen::visit(const ast::InstructionAssignment* a) {
   } else if (ref_to_stack || stack_to_stack) {
     // need to "copy construct" aka just memcpy currently
     builder_.CreateMemCpy(llvm_dst, llvm::MaybeAlign(), llvm_src,
-                          llvm::MaybeAlign(), src_type->get_object_size(),
-                          false);
+                          llvm::MaybeAlign(), src_type->getObjectSize(), false);
   } else if (stack_to_ref || ref_to_ref) {
     // store pointer into ref stack loc
     builder_.CreateStore(llvm_src, llvm_dst);

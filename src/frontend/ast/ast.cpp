@@ -12,7 +12,7 @@
 #include "frontend/visitor/AbstractVisitorValue.h"
 
 namespace frontend::ast {
-BinOpId string_to_binop(const std::string& op) {
+BinOpId stringToBinop(const std::string& op) {
   if (op == "+")
     return ADD;
   if (op == "*")
@@ -38,7 +38,7 @@ BinOpId string_to_binop(const std::string& op) {
 
   FRONTEND_ERROR("Unknown binop: " + op);
 }
-std::string binop_to_string(BinOpId op) {
+std::string binopToString(BinOpId op) {
   switch (op) {
     case ADD:
       return "+";
@@ -84,23 +84,23 @@ class DerivedVariable : public Variable {
 }  // namespace
 
 std::map<const Function*, std::map<std::string, std::shared_ptr<Variable>>>
-    Variable::variables;
+    Variable::variables_;
 std::shared_ptr<Variable> Variable::get(const std::string& name,
                                         const Function* f) {
-  if (variables.find(f) == variables.end()) {
-    variables[f] = std::map<std::string, std::shared_ptr<Variable>>();
+  if (variables_.find(f) == variables_.end()) {
+    variables_[f] = std::map<std::string, std::shared_ptr<Variable>>();
   }
 
-  if (variables[f].find(name) == variables[f].end()) {
-    auto new_var = std::make_shared<DerivedVariable>();
-    new_var->name = name;
-    variables[f][name] = std::move(new_var);
+  if (variables_[f].find(name) == variables_[f].end()) {
+    auto newVar = std::make_shared<DerivedVariable>();
+    newVar->name = name;
+    variables_[f][name] = std::move(newVar);
   }
-  return variables[f][name];
+  return variables_[f][name];
 }
 
 Integer::Integer(int64_t value)
-    : value(value), Value(VarType::get_literal_type("int64")) {}
+    : value(value), Value(VarType::getLiteralType("int64")) {}
 
 // ========================
 // define all the accept functions from ast.h here

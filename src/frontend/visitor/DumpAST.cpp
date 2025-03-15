@@ -12,7 +12,7 @@ void DumpAST::dump_program(const Program& program) {
 
 void DumpAST::dump_function(const ast::Function& function) {
   prefix_ = "\n";
-  stream_ << prefix_ << "define " << function.type->get_type_name() << " "
+  stream_ << prefix_ << "define " << function.type->getTypeName() << " "
           << function.name;
   std::string saved_prefix = prefix_;
   prefix_ = " ";
@@ -37,17 +37,17 @@ void DumpAST::dump_value(const ast::Value& value) {
 }
 
 void DumpAST::visit(const ast::Variable* var) {
-  stream_ << var->type->get_type_name() << " " << var->name;
+  stream_ << var->type->getTypeName() << " " << var->name;
 }
 void DumpAST::visit(const ast::Integer* num) {
-  stream_ << num->value << " " << num->type->get_type_name();
+  stream_ << num->value << " " << num->type->getTypeName();
 }
 void DumpAST::visit(const ast::FunctionName* func_name) {
-  stream_ << func_name->return_type->get_type_name() << " " << func_name->name;
+  stream_ << func_name->return_type->getTypeName() << " " << func_name->name;
 }
 void DumpAST::visit(const ast::BinaryOperation* bin_op) {
-  stream_ << ast::binop_to_string(bin_op->op)
-          << " type: " << bin_op->type->get_type_name();
+  stream_ << ast::binopToString(bin_op->op)
+          << " type: " << bin_op->type->getTypeName();
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*bin_op->lhs);
@@ -66,7 +66,7 @@ void DumpAST::visit(const ast::FunctionCall* call) {
   prefix_ = saved_prefix;
 }
 void DumpAST::visit(const ast::ArrayAccess* access) {
-  stream_ << "array access" << " type: " << access->type->get_type_name();
+  stream_ << "array access" << " type: " << access->type->getTypeName();
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*access->var);
@@ -74,7 +74,7 @@ void DumpAST::visit(const ast::ArrayAccess* access) {
   prefix_ = saved_prefix;
 }
 void DumpAST::visit(const ast::ArrayAllocate* alloc) {
-  stream_ << "array allocate" << " type: " << alloc->type->get_type_name();
+  stream_ << "array allocate" << " type: " << alloc->type->getTypeName();
   std::string saved_prefix = prefix_;
   prefix_ += " |";
   dump_value(*alloc->length);

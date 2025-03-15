@@ -18,22 +18,22 @@ namespace frontend {
 class CodeGenerator {
  public:
   CodeGenerator();
-  void generate_code(const Program& p, const std::string& filename);
+  void generateCode(const Program& p, const std::string& filename);
 
  private:
   llvm::LLVMContext context_;
   llvm::Module module_;
   llvm::IRBuilder<> builder_;
 
-  static void generate_llvm_ir(const ast::FunctionPtr& f,
-                               IRInstructionGen& irgen);
-  std::map<const ast::Variable*, llvm::Value*> function_setup(
+  static void generateLLVMIR(const ast::FunctionPtr& f,
+                             IRInstructionGen& irgen);
+  std::map<const ast::Variable*, llvm::Value*> functionSetup(
       const ast::FunctionPtr& f);
-  void llvm_verify_generated_ir() const;
-  void llvm_optim_pass();
-  void llvm_codegen_pass(const std::string& filename,
-                         llvm::CodeGenFileType file_type);
-  void setup_function_args(
+  void llvmVerifyGeneratedIr() const;
+  void llvmOptimPass();
+  void llvmCodegenPass(const std::string& filename,
+                       llvm::CodeGenFileType file_type);
+  void setupFunctionArgs(
       std::map<const ast::Variable*, llvm::Value*>& allocated_variables,
       llvm::Argument* llvm_arg, const ast::ConstValuePtr& var);
 };

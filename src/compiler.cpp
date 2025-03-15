@@ -22,15 +22,15 @@ int main(int argc, char** argv) {
                                   llvm::cl::location(enableDebug));
   llvm::cl::ParseCommandLineOptions(argc, argv);
 
-  frontend::Program p = frontend::parse_file(inputFilename.c_str());
-  frontend::DumpAST dump_ast;
+  frontend::Program p = frontend::parseFile(inputFilename.c_str());
+  frontend::DumpAST dumpAst;
   frontend::ApplyTypesBuilder builder;
   p = builder.build_program(p);
   if (enableDebug) {
-    dump_ast.dump_program(p);
+    dumpAst.dump_program(p);
   }
   frontend::CodeGenerator cg;
-  cg.generate_code(p, outputFilename);
+  cg.generateCode(p, outputFilename);
 
   return 0;
 }

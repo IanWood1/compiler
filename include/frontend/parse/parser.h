@@ -2,5 +2,5 @@
 
 #include "frontend/ast/ast.h"
 namespace frontend {
-Program parse_file(const char* file_name);
+Program parseFile(const char* file_name);
 }

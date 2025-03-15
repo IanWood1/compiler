@@ -4,11 +4,9 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
-#include "frontend/diagnostic/debug.h"
 #include "frontend/types/VarType.h"
 #include "frontend/visitor/AbstractVisitorInst.h"
 #include "frontend/visitor/AbstractVisitorValue.h"
@@ -40,11 +38,11 @@ struct Program {
 namespace ast {
 
 enum BinOpId { NONE, ADD, MUL, AND, SUB, SHL, SHR, LT, GT, LEQ, GEQ, EQ };
-std::string binop_to_string(BinOpId op);
+std::string binopToString(BinOpId op);
 struct Instruction;
 struct Value;
 struct Function;
-BinOpId string_to_binop(const std::string& op);
+BinOpId stringToBinop(const std::string& op);
 
 // All AST nodes (Function, Program, and Value) inherit from this
 struct TypedNode {
@@ -69,7 +67,7 @@ struct Variable : public Value {
                                        const Function* f);
   static std::map<const Function*,
                   std::map<std::string, std::shared_ptr<Variable>>>
-      variables;
+      variables_;
 
   std::string name;
   ~Variable() override = default;

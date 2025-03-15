@@ -365,8 +365,8 @@ struct action<Struct_rule> {
       struct_decl->member_name_to_index[mem_name] = i;
     }
     struct_decl->type =
-        VarType::get_struct_type(struct_decl->name, struct_decl->member_types,
-                                 struct_decl->member_name_to_index);
+        VarType::getStructType(struct_decl->name, struct_decl->member_types,
+                               struct_decl->member_name_to_index);
     p.structs.push_back(std::move(struct_decl));
 
     //    VarType::get_struct_type();
@@ -390,7 +390,7 @@ struct action<basic_type_rule> {
     std::string type_name = in.string();
     type_name.erase(std::remove(type_name.begin(), type_name.end(), ' '),
                     type_name.end());
-    state.parsed_vartypes.push_back(VarType::find_type_by_name(type_name));
+    state.parsed_vartypes.push_back(VarType::findTypeByName(type_name));
   }
 };
 
@@ -407,7 +407,7 @@ struct action<array_type_rule> {
     auto elem_type = std::move(state.parsed_vartypes.back());
     state.parsed_vartypes.pop_back();
     state.parsed_vartypes.emplace_back(
-        VarType::get_array_type(type_name, 1, size->value, elem_type));
+        VarType::getArrayType(type_name, 1, size->value, elem_type));
   }
 };
 
@@ -417,7 +417,7 @@ struct action<reference_type_rule> {
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(reference_type_rule);
     const auto& referenced_type = state.parsed_vartypes.back();
-    auto ref_type = referenced_type->get_ref_type_from();
+    auto ref_type = referenced_type->getRefTypeFrom();
     state.parsed_vartypes.pop_back();
     state.parsed_vartypes.push_back(ref_type);
   }
@@ -488,7 +488,7 @@ struct action<binop_rule> {
   template <typename Input>
   static void apply(const Input& in, Program& p, State& state) {
     PEGTL_PRINT_RULE(binop_rule);
-    state.parsed_binop = ast::string_to_binop(in.string());
+    state.parsed_binop = ast::stringToBinop(in.string());
   }
 };
 
@@ -603,9 +603,8 @@ struct action<Instruction_variable_declaration_rule> {
     PEGTL_PRINT_RULE(Instruction_variable_declaration_rule);
     for (auto& v : state.parsed_declared_vars) {
       auto var = dynamic_cast<ast::Variable*>(v.get());
-      var->type =
-          state.parsed_vartypes.back()
-              ->get_l_value_from();  // need to copy sharedptr to each var
+      var->type = state.parsed_vartypes.back()
+                      ->getLValueFrom();  // need to copy sharedptr to each var
       //      if (var->type->is_array()) {
       //        state.parsed_dims.back();
       //      }
@@ -791,7 +790,7 @@ struct action<end_scope_rule> {
 
 }  // namespace parser
 
-Program parse_file(const char* file_name) {
+Program parseFile(const char* file_name) {
   /*
    * Check the grammar for some possible issues.
    */

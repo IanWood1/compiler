@@ -33,17 +33,15 @@ IRValueGen::IRValueGen(llvm::IRBuilder<>& builder, llvm::LLVMContext& context,
 llvm::Value* IRValueGen::get_loaded_val(const ast::Value* value) {
   llvm::Value* llvm_val = get_val(value);
   const VarType& value_type = *value->type;
-  if (value_type.is_pr_value()) {
+  if (value_type.isPrValue()) {
     return llvm_val;  // already in virtual register
-  } else if (value_type.is_int() && !value_type.is_pr_value()) {
-    return builder_.CreateLoad(value_type.get_llvm_in_reg_type(context_),
-                               llvm_val);
-  } else if (value_type.is_array() || value_type.is_struct()) {
+  } else if (value_type.isInt() && !value_type.isPrValue()) {
+    return builder_.CreateLoad(value_type.getLlvmInRegType(context_), llvm_val);
+  } else if (value_type.isArray() || value_type.isStruct()) {
     return llvm_val;
-  } else if (value_type.is_ref()) {
-    return builder_.CreateLoad(value_type.get_llvm_in_reg_type(context_),
-                               llvm_val);
-  } else if (value_type.is_void()) {
+  } else if (value_type.isRef()) {
+    return builder_.CreateLoad(value_type.getLlvmInRegType(context_), llvm_val);
+  } else if (value_type.isVoid()) {
     return nullptr;
   }
   FRONTEND_ERROR("no matching type found for load");
@@ -66,16 +64,16 @@ void IRValueGen::visit(const ast::Variable* v) {
     llvm::IRBuilder<> entry_builder_tmp(&f->getEntryBlock(),
                                         f->getEntryBlock().begin());
     llvm::Value* var = entry_builder_tmp.CreateAlloca(
-        v->type->get_llvm_stack_alloc_ty(context_), nullptr, v->name);
+        v->type->getLlvmStackAllocTy(context_), nullptr, v->name);
 
-    if (v->type->is_ref()) {
+    if (v->type->isRef()) {
       ASSERT(v->type->get_object_size() == 8,
              "Doesnt support != 8 byte primitives or refs");
       builder_.CreateStore(
           llvm::ConstantPointerNull::get(
-              v->type->get_llvm_stack_alloc_ty(context_)->getPointerTo(0)),
+              v->type->getLlvmStackAllocTy(context_)->getPointerTo(0)),
           var);
-    } else if (v->type->is_int()) {
+    } else if (v->type->isInt()) {
       ASSERT(v->type->get_object_size() == 8,
              "Doesnt support != 8 byte primitives or refs");
       builder_.CreateStore(
@@ -92,7 +90,7 @@ void IRValueGen::visit(const ast::Variable* v) {
 }
 
 void IRValueGen::visit(const ast::Integer* n) {
-  value_ = llvm::ConstantInt::getSigned(n->type->get_llvm_in_reg_type(context_),
+  value_ = llvm::ConstantInt::getSigned(n->type->getLlvmInRegType(context_),
                                         n->value);
 }
 void IRValueGen::visit(const ast::FunctionName* b) {
@@ -159,28 +157,28 @@ void IRValueGen::visit(const ast::FunctionCall* f) {
   for (int i = 0; i < f->args.size(); i++) {
     auto& arg = f->args[i];
     auto& expected_type = f->arg_types[i];
-    if (expected_type->is_ref()) {
+    if (expected_type->isRef()) {
       // pass the reference by value, no need to load
       args.push_back(get_val(arg.get()));
     } else {
       args.push_back(get_loaded_val(arg.get()));
     }
   }
-  if (f->type->is_array() || f->type->is_struct()) {
+  if (f->type->isArray() || f->type->isStruct()) {
     // return stack obj by value, create a new obj in this frame and pass ptr to last argument
     llvm::Function* llvm_func = builder_.GetInsertBlock()->getParent();
     llvm::IRBuilder<> entry_builder_tmp(&llvm_func->getEntryBlock(),
                                         llvm_func->getEntryBlock().begin());
     llvm::Value* llvm_object_ptr = entry_builder_tmp.CreateAlloca(
-        f->type->get_llvm_stack_alloc_ty(context_), nullptr);
+        f->type->getLlvmStackAllocTy(context_), nullptr);
     args.push_back(llvm_object_ptr);
   }
   value_ = builder_.CreateCall(static_cast<llvm::Function*>(func), args);
 }
 void IRValueGen::visit(const ast::ArrayAccess* a) {
   const VarType& variable_type = *a->var->type;
-  const VarType& array_type = variable_type.is_ref()
-                                  ? *variable_type.get_referenced_type()
+  const VarType& array_type = variable_type.isRef()
+                                  ? *variable_type.getReferencedType()
                                   : variable_type;
   llvm::Value* base = get_loaded_val(a->var.get());
 
@@ -189,13 +187,13 @@ void IRValueGen::visit(const ast::ArrayAccess* a) {
   for (auto& index : a->indices) {
     indices.push_back(get_loaded_val(index.get()));
   }
-  value_ = builder_.CreateGEP(array_type.get_llvm_stack_alloc_ty(context_),
-                              base, indices);
+  value_ = builder_.CreateGEP(array_type.getLlvmStackAllocTy(context_), base,
+                              indices);
 }
 
 void IRValueGen::visit(const ast::ArrayAllocate* a) {
   llvm::Type* llvm_elem_type =
-      a->type->get_elem_type()->get_llvm_in_reg_type(context_);
+      a->type->getElemType()->getLlvmInRegType(context_);
 
   uint64_t size = get_value_of_integer(a->length.get());
 

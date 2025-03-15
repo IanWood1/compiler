@@ -23,9 +23,7 @@
 #include <llvm/Target/TargetOptions.h>
 
 #include <cstdlib>
-#include <iostream>
 #include <map>
-#include <ostream>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -37,105 +35,105 @@
 namespace frontend {
 CodeGenerator::CodeGenerator()
     : module_("my compiler!!!", context_), builder_(context_) {}
-void CodeGenerator::generate_code(const Program& program,
-                                  const std::string& output_filename) {
+void CodeGenerator::generateCode(const Program& program,
+                                 const std::string& output_filename) {
   /*
    * Generate target code
    */
   for (const auto& f : program.functions) {
     // generate function declaration
 
-    auto allocated_variables = function_setup(f);
-    IRInstructionGen irgen(builder_, context_, module_, allocated_variables);
-    generate_llvm_ir(f, irgen);
+    auto allocatedVariables = functionSetup(f);
+    IRInstructionGen irgen(builder_, context_, module_, allocatedVariables);
+    generateLLVMIR(f, irgen);
   }
 
   // module_.print(llvm::errs(), nullptr);
 
-  llvm_verify_generated_ir();
+  llvmVerifyGeneratedIr();
 
-  llvm_optim_pass();
+  llvmOptimPass();
 
-  llvm_codegen_pass(output_filename + ".asm",
-                    llvm::CodeGenFileType::CGFT_AssemblyFile);
+  llvmCodegenPass(output_filename + ".asm",
+                  llvm::CodeGenFileType::CGFT_AssemblyFile);
 
-  llvm_codegen_pass(output_filename, llvm::CodeGenFileType::CGFT_ObjectFile);
+  llvmCodegenPass(output_filename, llvm::CodeGenFileType::CGFT_ObjectFile);
   // module_.print(llvm::errs(), nullptr);
 }
 
-void CodeGenerator::llvm_verify_generated_ir() const {
+void CodeGenerator::llvmVerifyGeneratedIr() const {
   DEBUG_PRINT("==========================================\n");
   DEBUG_PRINT("Verifying correctness of generated LLVM IR\n");
-  bool is_error = llvm::verifyModule(module_, &llvm::errs());
-  (void)is_error;
-  assert(!is_error);
+  bool isError = llvm::verifyModule(module_, &llvm::errs());
+  (void)isError;
+  assert(!isError);
 }
 
-void CodeGenerator::llvm_optim_pass() {
+void CodeGenerator::llvmOptimPass() {
   DEBUG_PRINT("==========================================\n");
   DEBUG_PRINT("running opt passes ............\n");
   // llvm::FunctionPassManager fpm;
-  llvm::LoopAnalysisManager loop_analysis_manager;
-  llvm::FunctionAnalysisManager function_analysis_manager;
-  llvm::CGSCCAnalysisManager cgscc_analysis_manager;
-  llvm::ModuleAnalysisManager module_analysis_manager;
+  llvm::LoopAnalysisManager loopAnalysisManager;
+  llvm::FunctionAnalysisManager functionAnalysisManager;
+  llvm::CGSCCAnalysisManager cgsccAnalysisManager;
+  llvm::ModuleAnalysisManager moduleAnalysisManager;
 
   llvm::PassBuilder pb;
 
   // Register all the basic analyses with the managers.
-  pb.registerModuleAnalyses(module_analysis_manager);
-  pb.registerCGSCCAnalyses(cgscc_analysis_manager);
-  pb.registerFunctionAnalyses(function_analysis_manager);
-  pb.registerLoopAnalyses(loop_analysis_manager);
-  pb.crossRegisterProxies(loop_analysis_manager, function_analysis_manager,
-                          cgscc_analysis_manager, module_analysis_manager);
+  pb.registerModuleAnalyses(moduleAnalysisManager);
+  pb.registerCGSCCAnalyses(cgsccAnalysisManager);
+  pb.registerFunctionAnalyses(functionAnalysisManager);
+  pb.registerLoopAnalyses(loopAnalysisManager);
+  pb.crossRegisterProxies(loopAnalysisManager, functionAnalysisManager,
+                          cgsccAnalysisManager, moduleAnalysisManager);
 
   // Create the pass manager.
   // This one corresponds to a typical -O2 optimization pipeline.
-  llvm::ModulePassManager optimize_pass_manager =
+  llvm::ModulePassManager optimizePassManager =
       pb.buildPerModuleDefaultPipeline(llvm::OptimizationLevel::O2);
-  optimize_pass_manager.run(module_, module_analysis_manager);
+  optimizePassManager.run(module_, moduleAnalysisManager);
 }
 
-void CodeGenerator::llvm_codegen_pass(const std::string& filename,
-                                      llvm::CodeGenFileType file_type) {
+void CodeGenerator::llvmCodegenPass(const std::string& filename,
+                                    llvm::CodeGenFileType file_type) {
   //  Initialize the target registry etc.
   llvm::InitializeAllTargetInfos();
   llvm::InitializeAllTargets();
   llvm::InitializeAllTargetMCs();
   llvm::InitializeAllAsmParsers();
   llvm::InitializeAllAsmPrinters();
-  auto target_triple = llvm::sys::getDefaultTargetTriple();
+  auto targetTriple = llvm::sys::getDefaultTargetTriple();
   DEBUG_PRINT("target triple: " << target_triple << "\n");
   // target_triple = "x86_64-pc-linux-gnu";
 
   const auto* cpu = "generic";
   const auto* features = "";
-  std::string error_str;
+  std::string errorStr;
 
   const auto* target =
-      llvm::TargetRegistry::lookupTarget(target_triple, error_str);
+      llvm::TargetRegistry::lookupTarget(targetTriple, errorStr);
   if (!target) {
-    FRONTEND_ERROR(error_str);
+    FRONTEND_ERROR(errorStr);
   }
 
   llvm::TargetOptions opt;
-  llvm::TargetMachine* target_machine = target->createTargetMachine(
-      target_triple, cpu, features, opt, llvm::Reloc::PIC_);
+  llvm::TargetMachine* targetMachine = target->createTargetMachine(
+      targetTriple, cpu, features, opt, llvm::Reloc::PIC_);
 
-  module_.setDataLayout(target_machine->createDataLayout());
-  module_.setTargetTriple(target_triple);
+  module_.setDataLayout(targetMachine->createDataLayout());
+  module_.setTargetTriple(targetTriple);
 
-  std::error_code error_code;
-  llvm::raw_fd_ostream dest(filename, error_code, llvm::sys::fs::OF_None);
+  std::error_code errorCode;
+  llvm::raw_fd_ostream dest(filename, errorCode, llvm::sys::fs::OF_None);
 
-  if (error_code) {
-    FRONTEND_ERROR("Could not open file: " + error_code.message());
+  if (errorCode) {
+    FRONTEND_ERROR("Could not open file: " + errorCode.message());
   }
 
   llvm::legacy::PassManager pass;
 
-  if (target_machine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
+  if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, file_type)) {
     FRONTEND_ERROR("target_machine can't emit a file of this type\n");
     exit(1);
   }
@@ -144,67 +142,67 @@ void CodeGenerator::llvm_codegen_pass(const std::string& filename,
   dest.flush();
 }
 
-void CodeGenerator::generate_llvm_ir(const ast::FunctionPtr& f,
-                                     IRInstructionGen& irgen) {
+void CodeGenerator::generateLLVMIR(const ast::FunctionPtr& f,
+                                   IRInstructionGen& irgen) {
   irgen.get(*f->scope.get());
 }
 
-std::map<const ast::Variable*, llvm::Value*> CodeGenerator::function_setup(
+std::map<const ast::Variable*, llvm::Value*> CodeGenerator::functionSetup(
     const ast::FunctionPtr& f) {
-  std::vector<llvm::Type*> arg_llvm_types(f->args.size());
+  std::vector<llvm::Type*> argLlvmTypes(f->args.size());
   for (int i = 0; i < f->args.size(); i++) {
-    arg_llvm_types[i] = f->args[i]->type->get_llvm_in_reg_type(context_);
+    argLlvmTypes[i] = f->args[i]->type->getLlvmInRegType(context_);
   }
-  if (f->type->is_array() || f->type->is_struct()) {
+  if (f->type->isArray() || f->type->isStruct()) {
     // last parameter is the address of the returned object
-    arg_llvm_types.push_back(f->type->get_llvm_in_reg_type(context_));
+    argLlvmTypes.push_back(f->type->getLlvmInRegType(context_));
   }
 
-  llvm::Type* llvm_ret_type = f->type->get_llvm_in_reg_type(context_);
-  llvm::FunctionType* function_type =
-      llvm::FunctionType::get(llvm_ret_type, arg_llvm_types, false);
-  llvm::Function* llvm_func = llvm::Function::Create(
-      function_type, llvm::Function::ExternalLinkage, f->name, module_);
+  llvm::Type* llvmRetType = f->type->getLlvmInRegType(context_);
+  llvm::FunctionType* functionType =
+      llvm::FunctionType::get(llvmRetType, argLlvmTypes, false);
+  llvm::Function* llvmFunc = llvm::Function::Create(
+      functionType, llvm::Function::ExternalLinkage, f->name, module_);
 
   // entry block
-  llvm::BasicBlock* entry_block =
-      llvm::BasicBlock::Create(context_, "entry", llvm_func);
-  builder_.SetInsertPoint(entry_block);
+  llvm::BasicBlock* entryBlock =
+      llvm::BasicBlock::Create(context_, "entry", llvmFunc);
+  builder_.SetInsertPoint(entryBlock);
 
   unsigned int i = 0;
-  std::map<const ast::Variable*, llvm::Value*> allocated_variables;
+  std::map<const ast::Variable*, llvm::Value*> allocatedVariables;
   for (const auto& var : f->args) {
     // Note: intentionally skips last llvm func arg if it is a return value arg
-    auto* llvm_arg = llvm_func->getArg(i);
-    setup_function_args(allocated_variables, llvm_arg, var);
+    auto* llvmArg = llvmFunc->getArg(i);
+    setupFunctionArgs(allocatedVariables, llvmArg, var);
     i++;
   }
-  return allocated_variables;
+  return allocatedVariables;
 }
-void CodeGenerator::setup_function_args(
+void CodeGenerator::setupFunctionArgs(
     std::map<const ast::Variable*, llvm::Value*>& allocated_variables,
     llvm::Argument* llvm_arg, const ast::ConstValuePtr& var) {
   const auto* arg = dynamic_cast<const ast::Variable*>(var.get());
   if (!arg) {
     FRONTEND_ERROR("error: arg in function definition is not a variable\n");
   }
-  const auto& curr_arg = var;
+  const auto& currArg = var;
 
-  if (curr_arg->type->is_object()) {
+  if (currArg->type->isObject()) {
     // allocate stack space for pass-by-value param
-    auto* stack_ptr = this->builder_.CreateAlloca(
-        arg->type->get_llvm_stack_alloc_ty(this->context_), nullptr,
+    auto* stackPtr = this->builder_.CreateAlloca(
+        arg->type->getLlvmStackAllocTy(this->context_), nullptr,
         "pass-by-copy");
-    this->builder_.CreateMemCpy(stack_ptr, llvm::MaybeAlign(), llvm_arg,
+    this->builder_.CreateMemCpy(stackPtr, llvm::MaybeAlign(), llvm_arg,
                                 llvm::MaybeAlign(),
-                                curr_arg->type->get_object_size());
-    allocated_variables[arg] = stack_ptr;
-  } else if (curr_arg->type->is_ref()) {
+                                currArg->type->getObjectSize());
+    allocated_variables[arg] = stackPtr;
+  } else if (currArg->type->isRef()) {
     allocated_variables[arg] = llvm_arg;
   } else {
-    allocated_variables[arg] = this->builder_.CreateAlloca(
-        arg->type->get_llvm_in_reg_type(this->context_), nullptr,
-        "pass-by-copy-atomic");
+    allocated_variables[arg] =
+        this->builder_.CreateAlloca(arg->type->getLlvmInRegType(this->context_),
+                                    nullptr, "pass-by-copy-atomic");
     this->builder_.CreateStore(llvm_arg, allocated_variables[arg]);
   }
 }

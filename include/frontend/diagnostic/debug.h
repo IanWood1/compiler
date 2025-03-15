@@ -2,8 +2,6 @@
 #pragma once
 #include <cstdlib>
 #include <iostream>
-#include <stdexcept>
-#include <string>
 
 extern bool enableDebug;
 
