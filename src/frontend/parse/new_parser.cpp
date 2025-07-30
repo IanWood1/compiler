@@ -176,6 +176,58 @@ ConstVarTypePtr RecursiveDescentParser::parseType() {
     return base_type;
 }
 
+bool RecursiveDescentParser::tryParseType(ConstVarTypePtr& result) {
+    // First get the base type name
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        return false;
+    }
+    std::string base_type_name = current_token_.text;
+    advance();
+    
+    // For now, don't handle template types in the try version to keep it simple
+    ConstVarTypePtr base_type = VarType::findTypeByName(base_type_name);
+    
+    // Check for array type
+    if (current_token_.type == lexer::TokenType::LEFT_BRACKET) {
+        advance(); // consume '['
+        
+        // For array type declarations, we expect a simple number literal
+        if (current_token_.type != lexer::TokenType::NUMBER) {
+            return false;  // Not a simple constant - probably an assignment
+        }
+        
+        std::string size_text = current_token_.text;
+        advance();
+        
+        if (current_token_.type != lexer::TokenType::RIGHT_BRACKET) {
+            return false;
+        }
+        advance();
+        
+        // Parse the size as integer
+        int64_t size_value;
+        try {
+            size_value = std::stoll(size_text);
+        } catch (...) {
+            return false;
+        }
+        
+        std::string type_name = base_type->getTypeName() + "[" + std::to_string(size_value) + "]";
+        result = VarType::getArrayType(type_name, 1, size_value, base_type);
+        return true;
+    }
+    
+    // Check for reference type
+    if (current_token_.type == lexer::TokenType::AMPERSAND) {
+        advance();
+        result = base_type->getRefTypeFrom();
+        return true;
+    }
+    
+    result = base_type;
+    return true;
+}
+
 ConstVarTypePtr RecursiveDescentParser::parseBasicType() {
     if (current_token_.type != lexer::TokenType::IDENTIFIER) {
         error("Expected type name");
@@ -230,19 +282,14 @@ std::unique_ptr<ast::Instruction> RecursiveDescentParser::parseInstruction() {
                     return parseAssignment();
                 }
                 
-                // Check for array-related syntax (identifier followed by '[')
+                // For brackets, try variable declaration first with non-failing parse
                 if (next.type == lexer::TokenType::LEFT_BRACKET) {
-                    // Look ahead to see what comes after the brackets
-                    auto after_brackets = lookaheadAfterBrackets();
-                    
-                    // If followed by an identifier, it's likely a variable declaration: type[size] var
-                    if (after_brackets == lexer::TokenType::IDENTIFIER) {
-                        return parseVariableDeclaration();
+                    std::unique_ptr<ast::Instruction> var_decl_result;
+                    if (tryParseVariableDeclaration(var_decl_result)) {
+                        return var_decl_result;
                     }
-                    // If followed by '=' or other operators, it's an assignment: var[index] = value
-                    else {
-                        return parseAssignment();
-                    }
+                    // If that fails, try as assignment
+                    return parseAssignment();
                 }
                 
                 // Must be a variable declaration if it's a type name followed by identifier
@@ -292,6 +339,36 @@ std::unique_ptr<ast::InstructionDecl> RecursiveDescentParser::parseVariableDecla
     }
     
     return std::make_unique<ast::InstructionDecl>(std::move(variables));
+}
+
+bool RecursiveDescentParser::tryParseVariableDeclaration(std::unique_ptr<ast::Instruction>& result) {
+    auto saved_state = saveLexerState();
+    
+    ConstVarTypePtr var_type;
+    if (!tryParseType(var_type)) {
+        restoreLexerState(saved_state);
+        return false;
+    }
+    
+    // After parsing the type, we should see an identifier for the variable name
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        restoreLexerState(saved_state);
+        return false;
+    }
+    
+    // If we get here, it's likely a variable declaration
+    auto variables = parseVariableDeclarationList();
+    
+    // Set type for all variables
+    for (auto& var : variables) {
+        auto* var_ptr = dynamic_cast<ast::Variable*>(var.get());
+        if (var_ptr) {
+            var_ptr->type = var_type->getLValueFrom();
+        }
+    }
+    
+    result = std::make_unique<ast::InstructionDecl>(std::move(variables));
+    return true;
 }
 
 std::unique_ptr<ast::InstructionFunctionCall> RecursiveDescentParser::parseFunctionCallInstruction() {
@@ -447,6 +524,7 @@ ast::ConstValuePtr RecursiveDescentParser::parseFunctionCall() {
 ast::ConstValuePtr RecursiveDescentParser::parseArrayAccess() {
     auto var = parseVariable();
     std::vector<ast::ConstValuePtr> indices;
+    size_t line = current_token_.line;
     
     while (current_token_.type == lexer::TokenType::LEFT_BRACKET) {
         advance();
@@ -454,7 +532,7 @@ ast::ConstValuePtr RecursiveDescentParser::parseArrayAccess() {
         expect(lexer::TokenType::RIGHT_BRACKET);
     }
     
-    return std::make_shared<ast::ArrayAccess>(std::move(var), std::move(indices), current_token_.line);
+    return std::make_shared<ast::ArrayAccess>(std::move(var), std::move(indices), line);
 }
 
 ast::ConstValuePtr RecursiveDescentParser::parseArrayAllocate() {

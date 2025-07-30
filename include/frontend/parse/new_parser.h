@@ -40,14 +40,14 @@ private:
     std::unique_ptr<ast::StructDecl> parseStruct();
     ConstVarTypePtr parseType();
     ConstVarTypePtr parseBasicType();
-    ConstVarTypePtr parseArrayType();
-    ConstVarTypePtr parseReferenceType();
+    bool tryParseType(ConstVarTypePtr& result);  // Returns false on failure instead of calling error()
     
     std::unique_ptr<ast::Scope> parseScope();
     std::unique_ptr<ast::Instruction> parseInstruction();
     std::unique_ptr<ast::InstructionReturn> parseReturn();
     std::unique_ptr<ast::InstructionAssignment> parseAssignment();
     std::unique_ptr<ast::InstructionDecl> parseVariableDeclaration();
+    bool tryParseVariableDeclaration(std::unique_ptr<ast::Instruction>& result);
     std::unique_ptr<ast::InstructionFunctionCall> parseFunctionCallInstruction();
     std::unique_ptr<ast::InstructionWhileLoop> parseWhile();
     std::unique_ptr<ast::InstructionIfStatement> parseIf();
