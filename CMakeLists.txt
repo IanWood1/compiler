@@ -33,10 +33,10 @@ project("compiler")
 include(CTest)
 
 # Add source to this project's executable.
-add_subdirectory(external/PEGTL EXCLUDE_FROM_ALL)
+# External dependencies moved to individual modules
 
 # Only allow LLVM version 17.0.0
-set(LLVM_VERSION 15.0.6)
+set(LLVM_VERSION 17.0.6)
 
 find_package(LLVM ${LLVM_VERSION} REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
