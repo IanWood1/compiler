@@ -34,18 +34,19 @@ bool RecursiveDescentParser::match(lexer::TokenType type) {
     return false;
 }
 
-void RecursiveDescentParser::advance() {
+void RecursiveDescentParser::advance() const {
     current_token_ = lexer_.nextToken();
 }
 
-RecursiveDescentParser::LexerState RecursiveDescentParser::saveLexerState() {
+RecursiveDescentParser::LexerState RecursiveDescentParser::saveLexerState() const {
     return {lexer_.pos_, lexer_.line_, lexer_.column_};
 }
 
-void RecursiveDescentParser::restoreLexerState(const LexerState& state) {
+void RecursiveDescentParser::restoreLexerState(const LexerState& state) const {
     lexer_.pos_ = state.pos;
     lexer_.line_ = state.line;
     lexer_.column_ = state.column;
+    lexer_.peeked_token_.reset(); // Clear the peeked token cache
     current_token_ = lexer_.nextToken();
 }
 
@@ -77,8 +78,11 @@ std::unique_ptr<ast::Function> RecursiveDescentParser::parseFunction() {
     function->type = parseType();
     
     // Parse function name
-    expect(lexer::TokenType::IDENTIFIER);
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        error("Expected function name");
+    }
     function->name = current_token_.text;
+    advance();
     
     // Parse parameters
     expect(lexer::TokenType::LEFT_PAREN);
@@ -97,16 +101,22 @@ std::unique_ptr<ast::StructDecl> RecursiveDescentParser::parseStruct() {
     auto struct_decl = std::make_unique<ast::StructDecl>();
     
     expect(lexer::TokenType::STRUCT);
-    expect(lexer::TokenType::IDENTIFIER);
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        error("Expected struct name");
+    }
     struct_decl->name = current_token_.text;
+    advance();
     
     expect(lexer::TokenType::LEFT_BRACE);
     
     int member_index = 0;
     while (current_token_.type != lexer::TokenType::RIGHT_BRACE) {
         ConstVarTypePtr member_type = parseType();
-        expect(lexer::TokenType::IDENTIFIER);
+        if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+            error("Expected member name");
+        }
         std::string member_name = current_token_.text;
+        advance();
         
         struct_decl->member_types.push_back(member_type);
         struct_decl->member_name_to_index[member_name] = member_index++;
@@ -124,11 +134,37 @@ std::unique_ptr<ast::StructDecl> RecursiveDescentParser::parseStruct() {
 }
 
 ConstVarTypePtr RecursiveDescentParser::parseType() {
-    ConstVarTypePtr base_type = parseBasicType();
+    // First get the base type name
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        error("Expected type name");
+    }
+    std::string base_type_name = current_token_.text;
+    advance();
+    
+    // Handle template types like int64<type>
+    while (current_token_.type == lexer::TokenType::LESS_THAN) {
+        advance();
+        ConstVarTypePtr template_arg = parseType();
+        expect(lexer::TokenType::GREATER_THAN);
+        base_type_name += "<" + template_arg->getTypeName() + ">";
+    }
+    
+    ConstVarTypePtr base_type = VarType::findTypeByName(base_type_name);
     
     // Check for array type
     if (current_token_.type == lexer::TokenType::LEFT_BRACKET) {
-        return parseArrayType();
+        advance(); // consume '['
+        auto size_expr = parseExpression();
+        expect(lexer::TokenType::RIGHT_BRACKET);
+        
+        // Extract size from Integer literal
+        auto* size_int = dynamic_cast<const ast::Integer*>(size_expr.get());
+        if (!size_int) {
+            error("Array size must be a constant integer");
+        }
+        
+        std::string type_name = base_type->getTypeName() + "[" + std::to_string(size_int->value) + "]";
+        return VarType::getArrayType(type_name, 1, size_int->value, base_type);
     }
     
     // Check for reference type
@@ -141,36 +177,16 @@ ConstVarTypePtr RecursiveDescentParser::parseType() {
 }
 
 ConstVarTypePtr RecursiveDescentParser::parseBasicType() {
-    expect(lexer::TokenType::IDENTIFIER);
-    std::string type_name = current_token_.text;
-    
-    // Handle template types like int64<type>
-    while (current_token_.type == lexer::TokenType::LESS_THAN) {
-        advance();
-        ConstVarTypePtr template_arg = parseType();
-        expect(lexer::TokenType::GREATER_THAN);
-        type_name += "<" + template_arg->getTypeName() + ">";
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        error("Expected type name");
     }
+    std::string type_name = current_token_.text;
+    advance();
     
     return VarType::findTypeByName(type_name);
 }
 
-ConstVarTypePtr RecursiveDescentParser::parseArrayType() {
-    ConstVarTypePtr elem_type = parseBasicType();
-    
-    expect(lexer::TokenType::LEFT_BRACKET);
-    auto size_expr = parseExpression();
-    expect(lexer::TokenType::RIGHT_BRACKET);
-    
-    // Extract size from Integer literal
-    auto* size_int = dynamic_cast<const ast::Integer*>(size_expr.get());
-    if (!size_int) {
-        error("Array size must be a constant integer");
-    }
-    
-    std::string type_name = elem_type->getTypeName() + "[" + std::to_string(size_int->value) + "]";
-    return VarType::getArrayType(type_name, 1, size_int->value, elem_type);
-}
+
 
 std::unique_ptr<ast::Scope> RecursiveDescentParser::parseScope() {
     auto scope = std::make_unique<ast::Scope>();
@@ -209,13 +225,27 @@ std::unique_ptr<ast::Instruction> RecursiveDescentParser::parseInstruction() {
                     return parseFunctionCallInstruction();
                 }
                 
-                // Check for assignment (identifier followed by '=' or '[')
-                if (next.type == lexer::TokenType::ASSIGN || next.type == lexer::TokenType::LEFT_BRACKET) {
+                // Check for simple assignment (identifier followed by '=')
+                if (next.type == lexer::TokenType::ASSIGN) {
                     return parseAssignment();
                 }
                 
+                // Check for array-related syntax (identifier followed by '[')
+                if (next.type == lexer::TokenType::LEFT_BRACKET) {
+                    // Look ahead to see what comes after the brackets
+                    auto after_brackets = lookaheadAfterBrackets();
+                    
+                    // If followed by an identifier, it's likely a variable declaration: type[size] var
+                    if (after_brackets == lexer::TokenType::IDENTIFIER) {
+                        return parseVariableDeclaration();
+                    }
+                    // If followed by '=' or other operators, it's an assignment: var[index] = value
+                    else {
+                        return parseAssignment();
+                    }
+                }
+                
                 // Must be a variable declaration if it's a type name followed by identifier
-                // This is a simple heuristic - assume it's a type if followed by another identifier
                 if (next.type == lexer::TokenType::IDENTIFIER) {
                     return parseVariableDeclaration();
                 }
@@ -341,8 +371,11 @@ ast::ConstValuePtr RecursiveDescentParser::parseSingleExpression() {
 }
 
 ast::ConstValuePtr RecursiveDescentParser::parseVariable() {
-    expect(lexer::TokenType::IDENTIFIER);
+    if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+        error("Expected variable name");
+    }
     std::string name = current_token_.text;
+    advance();
     
     // Create variable with null function context for simplicity - this will be fixed up later
     auto var = ast::Variable::get(name, nullptr);
@@ -351,8 +384,11 @@ ast::ConstValuePtr RecursiveDescentParser::parseVariable() {
 }
 
 ast::ConstValuePtr RecursiveDescentParser::parseNumber() {
-    expect(lexer::TokenType::NUMBER);
+    if (current_token_.type != lexer::TokenType::NUMBER) {
+        error("Expected number");
+    }
     std::string text = current_token_.text;
+    advance();
     int64_t value = std::stoll(text);
     return std::make_shared<ast::Integer>(value);
 }
@@ -366,8 +402,11 @@ ast::ConstValuePtr RecursiveDescentParser::parseFunctionCall() {
         advance();
         function = std::make_shared<ast::FunctionName>(std::move(func_name), nullptr);
     } else {
-        expect(lexer::TokenType::IDENTIFIER);
+        if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+            error("Expected function name");
+        }
         std::string func_name = current_token_.text;
+        advance();
         
         // Find function in current program
         ConstVarTypePtr func_type = nullptr;
@@ -448,8 +487,11 @@ std::vector<ast::ConstValuePtr> RecursiveDescentParser::parseFunctionDefinitionA
     
     do {
         ConstVarTypePtr arg_type = parseType();
-        expect(lexer::TokenType::IDENTIFIER);
+        if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+            error("Expected argument name");
+        }
         std::string arg_name = current_token_.text;
+        advance();
         
         auto var = ast::Variable::get(arg_name, nullptr);
         var->name = arg_name;
@@ -465,8 +507,11 @@ std::vector<ast::ValuePtr> RecursiveDescentParser::parseVariableDeclarationList(
     std::vector<ast::ValuePtr> vars;
     
     do {
-        expect(lexer::TokenType::IDENTIFIER);
+        if (current_token_.type != lexer::TokenType::IDENTIFIER) {
+            error("Expected variable name");
+        }
         std::string var_name = current_token_.text;
+        advance();
         
         auto var = ast::Variable::get(var_name, nullptr);
         var->name = var_name;
@@ -548,6 +593,37 @@ bool RecursiveDescentParser::isStartOfExpression() const {
            current_token_.type == lexer::TokenType::PRINT ||
            current_token_.type == lexer::TokenType::INPUT ||
            current_token_.type == lexer::TokenType::LEFT_BRACKET;
+}
+
+lexer::TokenType RecursiveDescentParser::lookaheadAfterBrackets() const {
+    // Save current state
+    auto saved_state = saveLexerState();
+    
+    // Skip the current identifier
+    advance();
+    
+    // Skip past bracket expressions
+    if (current_token_.type == lexer::TokenType::LEFT_BRACKET) {
+        int bracket_count = 1;
+        advance(); // skip '['
+        
+        while (bracket_count > 0 && current_token_.type != lexer::TokenType::END_OF_FILE) {
+            if (current_token_.type == lexer::TokenType::LEFT_BRACKET) {
+                bracket_count++;
+            } else if (current_token_.type == lexer::TokenType::RIGHT_BRACKET) {
+                bracket_count--;
+            }
+            advance();
+        }
+    }
+    
+    // Get the token that follows
+    lexer::TokenType result = current_token_.type;
+    
+    // Restore state
+    restoreLexerState(saved_state);
+    
+    return result;
 }
 
 } // namespace parser

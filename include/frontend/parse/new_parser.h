@@ -16,7 +16,7 @@ public:
     
 private:
     lexer::Lexer& lexer_;
-    lexer::Token current_token_;
+    mutable lexer::Token current_token_;
     std::vector<std::unique_ptr<ast::Function>>* current_functions_;
     
     // Store original lexer state for lookahead
@@ -26,14 +26,14 @@ private:
         size_t column;
     };
     
-    LexerState saveLexerState();
-    void restoreLexerState(const LexerState& state);
+    LexerState saveLexerState() const;
+    void restoreLexerState(const LexerState& state) const;
     
     // Error handling
     void error(const std::string& message);
     void expect(lexer::TokenType expected);
     bool match(lexer::TokenType type);
-    void advance();
+    void advance() const;
     
     // Parsing methods
     std::unique_ptr<ast::Function> parseFunction();
@@ -74,6 +74,7 @@ private:
     bool isBinaryOperator() const;
     bool isStartOfInstruction() const;
     bool isStartOfExpression() const;
+    lexer::TokenType lookaheadAfterBrackets() const;
 };
 
 } // namespace parser
