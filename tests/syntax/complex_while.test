@@ -1,0 +1,17 @@
+// Test while loop with arithmetic in condition
+int64 test_complex_condition(){
+  int64 i
+  int64 result
+  i = 0
+  result = 0
+  while(i < 10){
+    result = result + i
+    i = i + 1
+  }
+  return result
+}
+
+// CHECK: define int64 (NONE) test_complex_condition
+// CHECK: while
+// CHECK: < type: int64
+// CHECK: + type: int64

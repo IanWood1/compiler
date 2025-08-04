@@ -1,0 +1,25 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test for array operations with loops
+int64 sum_array(int64[5] arr){
+  int64 i
+  int64 sum
+  i = 0
+  sum = 0
+  while(i < 5){
+    sum = sum + arr[i]
+    i = i + 1
+  }
+  return sum
+}
+
+int64 test_array_sum(){
+  int64[5] numbers
+  numbers = [10; 5]
+  return sum_array(numbers)
+}
+
+// Expected output:
+// test_array_sum() -> 50
+
+// CHECK: define int64 (NONE) sum_array
+// CHECK: define int64 (NONE) test_array_sum

@@ -1,0 +1,17 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - simple constant forwarding
+// Converted from legacy minitests.cpp/minitests.program (minitest1)
+// Expected return value: 13
+
+int64 minitest_forward_const(int64 x){
+  return x
+}
+
+int64 main(){
+  int64 x
+  x = minitest_forward_const(13)
+  return x
+}
+
+// CHECK: define int64 (NONE) minitest_forward_const
+// CHECK: define int64 (NONE) main

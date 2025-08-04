@@ -1,0 +1,11 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test based on original test2 - simple function call
+int64 test2(int64 a, int64 b){
+  return a + b
+}
+
+// Expected output:
+// test2(5, 10) -> 15
+
+// CHECK: define int64 (NONE) test2
+// CHECK: + type: int64

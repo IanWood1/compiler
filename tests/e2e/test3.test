@@ -1,8 +1,11 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - nested loops with function calls
+// Converted from legacy test3.cpp/test3.program
+// Expected return value: 150
+
 int64 test3add(int64 a, int64 b){
   return a + b
 }
-
-
 
 int64 test3(int64[5] vec, int64 len){
   int64 sum, i, j
@@ -36,3 +39,15 @@ int64 refs(){
   y = x
   return y[2]
 }
+
+int64 main(){
+  int64[5] array1
+  array1 = [1; 5]
+  return test3(array1, 5)
+}
+
+// CHECK: define int64 (NONE) test3add
+// CHECK: define int64 (NONE) test3
+// CHECK: define int64[5] (NONE) av
+// CHECK: define int64 (NONE) refs
+// CHECK: define int64 (NONE) main

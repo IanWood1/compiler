@@ -87,9 +87,9 @@ void IRInstructionGen::visit(const ast::InstructionWhileLoop* w) {
   llvm::BasicBlock* cond_block =
       llvm::BasicBlock::Create(context_, "while-cond", the_function);
   llvm::BasicBlock* body_block =
-      llvm::BasicBlock::Create(context_, "while-body");
+      llvm::BasicBlock::Create(context_, "while-body", the_function);
   llvm::BasicBlock* continue_block =
-      llvm::BasicBlock::Create(context_, "continue");
+      llvm::BasicBlock::Create(context_, "continue", the_function);
 
   builder_.CreateBr(cond_block);
   builder_.SetInsertPoint(cond_block);
@@ -99,7 +99,7 @@ void IRInstructionGen::visit(const ast::InstructionWhileLoop* w) {
   builder_.CreateCondBr(cond, body_block, continue_block);
 
   // add body to body_block
-  the_function->getBasicBlockList().insert(the_function->end(), body_block);
+  // body_block is already added to the function via the constructor
   builder_.SetInsertPoint(body_block);
   w->body->accept(this);
 
@@ -107,7 +107,7 @@ void IRInstructionGen::visit(const ast::InstructionWhileLoop* w) {
   builder_.CreateBr(cond_block);
 
   // add continue block
-  the_function->getBasicBlockList().insert(the_function->end(), continue_block);
+  // continue_block is already added to the function via the constructor
   builder_.SetInsertPoint(continue_block);
 }
 void IRInstructionGen::visit(const ast::InstructionIfStatement* f) {
@@ -117,7 +117,7 @@ void IRInstructionGen::visit(const ast::InstructionIfStatement* f) {
   llvm::BasicBlock* true_block =
       llvm::BasicBlock::Create(context_, "true-block", the_function);
   llvm::BasicBlock* continue_block =
-      llvm::BasicBlock::Create(context_, "continue-block");
+      llvm::BasicBlock::Create(context_, "continue-block", the_function);
 
   builder_.CreateCondBr(cond, true_block, continue_block);
 
@@ -127,7 +127,7 @@ void IRInstructionGen::visit(const ast::InstructionIfStatement* f) {
   builder_.CreateBr(continue_block);
 
   // continue block
-  the_function->getBasicBlockList().insert(the_function->end(), continue_block);
+  // continue_block is already added to the function via the constructor
   builder_.SetInsertPoint(continue_block);
 }
 void IRInstructionGen::visit(const ast::InstructionBreak* b) {

@@ -1,0 +1,7 @@
+// Test basic function declaration and simple arithmetic
+int64 simple_add(int64 a, int64 b){
+  return a + b
+}
+
+// CHECK: define int64 (NONE) simple_add int64 (NONE) a int64 (NONE) b
+// CHECK: + type: int64
