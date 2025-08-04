@@ -1,0 +1,84 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - complex array operations with function calls
+// Converted from legacy test1.cpp/test1.program
+// Expected return value: 30
+
+int64 add(int64 a, int64 b){
+  return a + b
+}
+
+int64[5] elemAdd(int64[5] src1, int64[5] src2, int64[5] dst, int64 len){
+  int64 i
+  i = 0
+  while(i < len){
+    dst[i] = src1[i] + src2[i]
+    i = i + 1
+  }
+  return dst
+}
+
+int64[5] memcpyArr(int64[5] dst, int64[5] src, int64 len){
+  int64 i
+  i = 0
+  while(i < len){
+    dst[i] = src[i]
+    i = i + 1
+  }
+  return dst
+}
+
+int64 sum(int64[5] vec, int64 len){
+  int64 ret
+  int64 i
+  ret = 0
+  i = 0
+  while(i < len){
+    ret = ret + vec[i]
+    i = i + 1
+  }
+  return ret
+}
+
+void swap(int64[5] vec1, int64[5] vec2, int64 len){
+  int64[5] tmp
+  tmp = [0;5]
+  memcpyArr(tmp, vec1, len)
+  memcpyArr(vec1, vec2, len)
+  memcpyArr(vec2, tmp, len)
+  return
+}
+
+int64 test1(int64[5] vec1, int64[5] vec2, int64 len){
+  int64 ret
+  int64[5] new_vec1
+  int64[5] new_vec2
+  new_vec1 = [0;5]
+  new_vec2 = [0;5]
+  int64[5] vec3
+  vec3 = [0;5]
+  swap(vec1, vec2, len)
+  swap(vec1, vec2, len)
+  swap(vec1, vec2, len)
+  swap(vec1, vec2, len)
+
+  return sum(elemAdd(memcpyArr(new_vec1, vec1, len), memcpyArr(new_vec2, vec2, len), vec3, len), len)
+}
+
+// Test execution - this simulates what the C++ test harness was doing
+int64 main(){
+  int64[5] array1
+  int64[5] array2
+  array1 = [1; 5]
+  array2 = [1; 5]
+  int64 result
+  result = test1(array1, array2, 5)
+  return result
+}
+
+// CHECK: define int64 (NONE) add
+// CHECK: define int64[5] (NONE) elemAdd
+// CHECK: define int64[5] (NONE) memcpyArr
+// CHECK: define int64 (NONE) sum
+// CHECK: define void (NONE) swap
+// CHECK: define int64 (NONE) test1
+// CHECK: define int64 (NONE) main

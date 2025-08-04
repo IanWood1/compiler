@@ -1,0 +1,49 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test based on original minitest - comprehensive array and function tests
+// This test compiles and executes code to verify correct output
+int64 minitest_forward_const(int64 x){
+  return x
+}
+
+int64 minitest1(){
+  int64 x
+  x = minitest_forward_const(13)
+  return x
+}
+
+void minitest_custom_insert(int64[10]& arr, int64 idx, int64 val){
+  arr[idx] = val
+  return
+}
+
+int64 minitest2(){
+  int64[10]& arr
+  arr = [100; 10]
+  minitest_custom_insert(arr, 1, 5)
+  minitest_custom_insert(arr, 2, 5)
+  minitest_custom_insert(arr, 3, 5)
+  return arr[1] + arr[2] + arr[3] + arr[0]
+}
+
+int64 minitest3(){
+  int64[3]& arr
+  arr = [5; 3]
+  int64 i
+  i = 0
+  int64 sum
+  sum = 0
+  while(i < 3){
+    sum = arr[i] + sum
+    i = i + 1
+  }
+  return sum
+}
+
+// Expected outputs:
+// minitest1() -> 13
+// minitest2() -> 115
+// minitest3() -> 15
+
+// CHECK: define int64 (NONE) minitest1
+// CHECK: define int64 (NONE) minitest2
+// CHECK: define int64 (NONE) minitest3

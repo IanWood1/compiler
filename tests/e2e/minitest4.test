@@ -1,0 +1,28 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - array return by value
+// Converted from legacy minitests.cpp/minitests.program (minitest4)
+// Expected return value: 10
+
+int64[10] minitest_retArrayByVal(int64 elemVal){
+    int64[10] res
+    int64 i
+    i = 0
+    while(i < 10){
+      res[i] = elemVal
+      i = i + 1
+    }
+    return res
+}
+
+int64 main(){
+  int64[10] arr
+  arr = minitest_retArrayByVal(10)
+  minitest_retArrayByVal(1)
+  minitest_retArrayByVal(1)
+  minitest_retArrayByVal(1)
+  minitest_retArrayByVal(1)
+  return arr[0]
+}
+
+// CHECK: define int64[10] (NONE) minitest_retArrayByVal
+// CHECK: define int64 (NONE) main

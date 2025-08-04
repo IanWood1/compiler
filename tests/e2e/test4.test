@@ -1,12 +1,15 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - array comparison with references
+// Converted from legacy test4.program
+// Expected return value: 0 (arrays are same)
+
 int64[10] test4_forward(int64[10] x){
     return x
 }
 
-
 int64[10]& test4_forward2(int64[10]& x){
     return x
 }
-
 
 int64[10]& test4_forward3(int64[10]& x){
     int64[10]& b
@@ -30,8 +33,6 @@ int64 test4_compare(int64[10]& arr1, int64[10] arr2){
     return res
 }
 
-
-
 // returns zero if the arrays are the same
 int64 test4(int64[10] arr1, int64[10] arr2){
     int64 res
@@ -41,3 +42,18 @@ int64 test4(int64[10] arr1, int64[10] arr2){
     res = res + test4_compare(arr2, arr1)
     return res
 }
+
+int64 main(){
+  int64[10] array1
+  int64[10] array2
+  array1 = [1; 10]
+  array2 = [1; 10]
+  return test4(array1, array2)
+}
+
+// CHECK: define int64[10] (NONE) test4_forward
+// CHECK: define int64[10]& (NONE) test4_forward2
+// CHECK: define int64[10]& (NONE) test4_forward3
+// CHECK: define int64 (NONE) test4_compare
+// CHECK: define int64 (NONE) test4
+// CHECK: define int64 (NONE) main

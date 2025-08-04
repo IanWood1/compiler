@@ -1,0 +1,20 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - array sum with while loop
+// Converted from legacy minitests.cpp/minitests.program (minitest3)
+// Expected return value: 15
+
+int64 main(){
+  int64[3]& arr
+  arr = [5; 3]
+  int64 i
+  i = 0
+  int64 sum
+  sum = 0
+  while(i < 3){
+    sum = arr[i] + sum
+    i = i + 1
+  }
+  return sum
+}
+
+// CHECK: define int64 (NONE) main

@@ -1,6 +1,6 @@
 [submodule "external/PEGTL"]
 	path = external/PEGTL
-	url = git@github.com:taocpp/PEGTL.git
+	url = https://github.com/taocpp/PEGTL.git
 [submodule "external/boost"]
 	path = external/boost
-	url = git@github.com:boostorg/boost.git
+	url = https://github.com/boostorg/boost.git

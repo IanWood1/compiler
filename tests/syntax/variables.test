@@ -1,0 +1,14 @@
+// Test variable declarations and assignments
+int64 test_variables(){
+  int64 x
+  int64 y
+  x = 10
+  y = 20
+  return x + y
+}
+
+// CHECK: define int64 (NONE) test_variables
+// CHECK: int64 (L Value) x
+// CHECK: int64 (L Value) y
+// CHECK: assign
+// CHECK: + type: int64

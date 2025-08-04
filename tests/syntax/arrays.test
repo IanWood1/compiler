@@ -1,0 +1,11 @@
+// Test array declarations and access
+int64 test_arrays(){
+  int64[5] arr
+  arr = [1; 5]
+  return arr[0]
+}
+
+// CHECK: define int64 (NONE) test_arrays
+// CHECK: int64[5] (L Value) arr
+// CHECK: assign
+// CHECK: array access type: int64&

@@ -1,0 +1,15 @@
+// RUN: %compiler -i %s -o %t.o && %t.o
+// E2E test - simple addition function
+// Converted from legacy test2.cpp/test2.program
+// Expected return value: 3
+
+int64 test2(int64 a, int64 b){
+  return a + b
+}
+
+int64 main(){
+  return test2(1, 2)
+}
+
+// CHECK: define int64 (NONE) test2
+// CHECK: define int64 (NONE) main
