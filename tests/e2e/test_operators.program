@@ -1,0 +1,109 @@
+// Test basic arithmetic operators
+int64 testArithmetic(int64 a, int64 b){
+  int64 sum, diff, prod
+  sum = a + b
+  diff = a - b
+  prod = a * b
+  return sum + diff + prod
+}
+
+// Test bitwise shift operators
+int64 testShiftLeft(int64 x, int64 shift){
+  return x << shift
+}
+
+int64 testShiftRight(int64 x, int64 shift){
+  return x >> shift
+}
+
+// Test comparison operators returning boolean-like values
+int64 testLessThan(int64 a, int64 b){
+  int64 result
+  result = a < b
+  return result
+}
+
+int64 testLessEqual(int64 a, int64 b){
+  int64 result
+  result = a <= b
+  return result
+}
+
+int64 testGreaterThan(int64 a, int64 b){
+  int64 result
+  result = a > b
+  return result
+}
+
+int64 testGreaterEqual(int64 a, int64 b){
+  int64 result
+  result = a >= b
+  return result
+}
+
+int64 testEqual(int64 a, int64 b){
+  int64 result
+  result = a == b
+  return result
+}
+
+// Test complex expression with multiple operators
+int64 testComplexExpr(int64 a, int64 b, int64 c){
+  int64 result, prod, sum
+  prod = b * c
+  sum = a + prod
+  result = sum - a
+  return result
+}
+
+// Test operator precedence
+int64 testPrecedence(int64 x){
+  int64 prod, result
+  prod = x * x
+  result = x + prod
+  return result
+}
+
+// Test chained comparisons in expressions
+int64 testChainedOps(int64 a, int64 b, int64 c){
+  int64 cmp1, cmp2, result
+  cmp1 = a < b
+  cmp2 = b < c
+  result = cmp1 + cmp2
+  return result
+}
+
+// Test operations with array elements
+int64 testArrayOps(int64[5] arr){
+  int64 result, prod, sum
+  prod = arr[1] * arr[2]
+  sum = arr[0] + prod
+  result = sum - arr[3]
+  return result
+}
+
+// Test shift operations with variables
+int64 testShiftOps(int64 base){
+  int64 left, right
+  left = base << 2
+  right = base >> 1
+  return left + right
+}
+
+// Test zero and negative handling
+int64 testZeroOps(int64 x){
+  int64 zero, prod, sum1, diff, result
+  zero = 0
+  prod = x * zero
+  sum1 = x + zero
+  diff = sum1 - zero
+  result = diff + prod
+  return result
+}
+
+// Test subtraction edge cases
+int64 testSubtraction(int64 a){
+  int64 result
+  result = a - a
+  return result + a
+}

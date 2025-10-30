@@ -127,7 +127,14 @@ class VarType {
     TypeCat type_category;
     ValCat value_category;
 
-    auto operator<=>(const TypeIdentifier&) const = default;
+    bool operator==(const TypeIdentifier& other) const {
+      return type_name == other.type_name && n_dims == other.n_dims &&
+             size == other.size && type_category == other.type_category &&
+             value_category == other.value_category;
+    }
+    bool operator!=(const TypeIdentifier& other) const {
+      return !(*this == other);
+    }
   };
 
   // general

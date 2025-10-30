@@ -1,0 +1,129 @@
+// Test array initialization with literal
+int64 testArrayInit(){
+  int64[5] arr
+  arr = [42; 5]
+  return arr[0] + arr[4]
+}
+
+// Test array access at boundaries
+int64 testArrayBounds(int64[10] arr){
+  return arr[0] + arr[9]
+}
+
+// Test array assignment and retrieval
+int64 testArrayAssign(){
+  int64[3] arr
+  arr[0] = 10
+  arr[1] = 20
+  arr[2] = 30
+  return arr[0] + arr[1] + arr[2]
+}
+
+// Test passing array by value doesn't modify original
+int64[5] modifyLocal(int64[5] arr){
+  arr[0] = 999
+  arr[1] = 999
+  return arr
+}
+
+// Test passing array by reference does modify
+void modifyRef(int64[5]& arr){
+  arr[0] = 100
+  arr[1] = 200
+  return
+}
+
+// Test array copy behavior
+int64 testArrayCopy(){
+  int64[5] arr1
+  int64[5] arr2
+  arr1 = [1; 5]
+  arr2 = arr1
+  arr2[0] = 99
+  return arr1[0]
+}
+
+// Test array with all same values
+int64 testUniformArray(){
+  int64[10] arr
+  arr = [7; 10]
+  int64 sum, i
+  sum = 0
+  i = 0
+  while(i < 10){
+    sum = sum + arr[i]
+    i = i + 1
+  }
+  return sum
+}
+
+// Test reference assignment
+int64 testRefAssignment(){
+  int64[5] arr
+  int64[5]& ref
+  arr[0] = 10
+  arr[1] = 20
+  arr[2] = 30
+  arr[3] = 40
+  arr[4] = 50
+  ref = arr
+  ref[2] = 99
+  return arr[2]
+}
+
+// Test nested array operations
+int64 testNestedArrayOps(int64[5] arr1, int64[5] arr2){
+  int64[5] result
+  int64 i
+  i = 0
+  while(i < 5){
+    result[i] = arr1[i] + arr2[i]
+    i = i + 1
+  }
+  return result[0] + result[4]
+}
+
+// Test array element as function parameter
+int64 helper(int64 x){
+  return x + x
+}
+
+int64 testArrayElemAsParam(){
+  int64[5] arr
+  arr = [5; 5]
+  return helper(arr[2])
+}
+
+// Test array with sequential values
+int64 testSequential(){
+  int64[5] arr
+  int64 i
+  i = 0
+  while(i < 5){
+    arr[i] = i
+    i = i + 1
+  }
+  return arr[0] + arr[1] + arr[2] + arr[3] + arr[4]
+}
+
+// Test large array
+int64 testLargeArray(){
+  int64[100] arr
+  arr = [1; 100]
+  return arr[0] + arr[50] + arr[99]
+}
+
+// Test array passed to multiple functions
+int64 readFirst(int64[3]& arr){
+  return arr[0]
+}
+
+int64 readLast(int64[3]& arr){
+  return arr[2]
+}
+
+int64 testMultipleAccess(){
+  int64[3]& arr
+  arr = [10; 3]
+  return readFirst(arr) + readLast(arr)
+}

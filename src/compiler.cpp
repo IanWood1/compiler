@@ -9,18 +9,24 @@
 
 bool enableDebug;
 
+// Create a custom category for compiler options
+static llvm::cl::OptionCategory CompilerCategory("Compiler Options");
+
 int main(int argc, char** argv) {
 
   llvm::cl::opt<std::string> outputFilename(
       "o", llvm::cl::desc("Specify output filename"),
-      llvm::cl::value_desc("filename"));
+      llvm::cl::value_desc("filename"), llvm::cl::cat(CompilerCategory));
   llvm::cl::opt<std::string> inputFilename(
-      "i", llvm::cl::desc("Specify desc filename"),
-      llvm::cl::value_desc("filename"));
-  llvm::cl::opt<bool, true> debug("d", llvm::cl::desc("Print debug output"),
-                                  llvm::cl::Hidden,
-                                  llvm::cl::location(enableDebug));
-  llvm::cl::ParseCommandLineOptions(argc, argv);
+      "i", llvm::cl::desc("Specify input filename"),
+      llvm::cl::value_desc("filename"), llvm::cl::cat(CompilerCategory));
+  llvm::cl::opt<bool, true> debug(
+      "d", llvm::cl::desc("Print debug output"), llvm::cl::Hidden,
+      llvm::cl::location(enableDebug), llvm::cl::cat(CompilerCategory));
+
+  // Hide all LLVM options and only show compiler options
+  llvm::cl::HideUnrelatedOptions(CompilerCategory);
+  llvm::cl::ParseCommandLineOptions(argc, argv, "Compiler\n");
 
   frontend::Program p = frontend::parseFile(inputFilename.c_str());
   frontend::DumpAST dumpAst;

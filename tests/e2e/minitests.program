@@ -1,18 +1,22 @@
+// Forward a constant value
 int64 minitest_forward_const(int64 x){
   return x
 }
 
+// Test forwarding a constant through a function
 int64 minitest1(){
   int64 x
   x = minitest_forward_const(13)
   return x
 }
 
+// Insert value into array by reference
 void minitest_custom_insert(int64[10]& arr, int64 idx, int64 val){
   arr[idx] = val
   return
 }
 
+// Test reference array modification
 int64 minitest2(){
   int64[10]& arr
   arr = [100; 10]
@@ -22,7 +26,7 @@ int64 minitest2(){
   return arr[1] + arr[2] + arr[3] + arr[0]
 }
 
-// This function should return 15
+// Test array sum with loop - should return 15
 int64 minitest3(){
   int64[3]& arr
   arr = [5; 3]
@@ -37,7 +41,7 @@ int64 minitest3(){
   return sum
 }
 
-
+// Return an array by value with all elements set to elemVal
 int64[10] minitest_retArrayByVal(int64 elemVal){
     int64[10] res
     int64 i
@@ -49,7 +53,7 @@ int64[10] minitest_retArrayByVal(int64 elemVal){
     return res
 }
 
-// should return 10
+// Test returning array by value - should return 10
 int64 minitest4(){
   int64[10] arr
   arr = minitest_retArrayByVal(10)
@@ -60,17 +64,19 @@ int64 minitest4(){
   return arr[0]
 }
 
+// Try to mutate local array (pass by value)
 void minitest_local_mutate(int64[100] arr){
   arr[100] = 100
  return
 }
 
+// Mutate array by reference
 void minitest_ref_mutate(int64[100]& arr){
  arr[0] = 100
  return
 }
 
-// should return 0
+// Test value vs reference semantics - should return 0
 int64 minitest5(){
  int64[100] arr1
  int64[100]& arr2
