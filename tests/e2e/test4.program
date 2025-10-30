@@ -38,7 +38,7 @@ int64 test4(int64[10] arr1, int64[10] arr2){
     int64[10]& ref1
     int64[10]& ref2
     res = 0
-    
+
     ref1 = arr1
     ref2 = arr2
     res = res + test4_compare(ref1, arr2)

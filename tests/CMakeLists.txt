@@ -24,7 +24,7 @@ function(add_e2e_tests test_name test_framework)
   foreach(source_file IN LISTS ARGN)
     set(e2e_source_file "${CMAKE_CURRENT_SOURCE_DIR}/${source_file}")
     set(e2e_object_file "${CMAKE_CURRENT_BINARY_DIR}/${source_file}.o")
-    
+
     # Create custom command to compile .program file to .o file
     add_custom_command(
       OUTPUT ${e2e_object_file}
@@ -32,7 +32,7 @@ function(add_e2e_tests test_name test_framework)
       DEPENDS ${e2e_source_file} compiler
       COMMENT "Compiling ${source_file} with compiler"
     )
-    
+
     list(APPEND e2e_test_objects ${e2e_object_file})
   endforeach()
 
@@ -41,11 +41,11 @@ function(add_e2e_tests test_name test_framework)
     ${test_framework}
     ${e2e_test_objects}
   )
-  
+
   set_target_properties(${e2e_test_name} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
-  
+
   # Ensure the test is built when 'compiler_tests' target is built
   add_dependencies(compiler_tests ${e2e_test_name})
 
@@ -55,4 +55,3 @@ endfunction()
 
 # Add e2e test subdirectory
 add_subdirectory(e2e)
-
