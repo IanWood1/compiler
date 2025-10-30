@@ -1,20 +1,21 @@
+// Forward array by value
 int64[10] test4_forward(int64[10] x){
     return x
 }
 
-
+// Forward array by reference
 int64[10]& test4_forward2(int64[10]& x){
     return x
 }
 
-
+// Chain reference forwarding
 int64[10]& test4_forward3(int64[10]& x){
     int64[10]& b
     b = test4_forward2(x)
     return b
 }
 
-// intentionally takes 1 ref and 1 as value
+// Compare arrays: one by reference, one by value
 int64 test4_compare(int64[10]& arr1, int64[10] arr2){
     int64 i, res
     i = 0
@@ -30,14 +31,17 @@ int64 test4_compare(int64[10]& arr1, int64[10] arr2){
     return res
 }
 
-
-
-// returns zero if the arrays are the same
+// Test array comparison - returns zero if arrays are the same
+// Creates local references to enable passing to test4_compare
 int64 test4(int64[10] arr1, int64[10] arr2){
     int64 res
+    int64[10]& ref1
+    int64[10]& ref2
     res = 0
-
-    res = res + test4_compare(arr1, arr2)
-    res = res + test4_compare(arr2, arr1)
+    
+    ref1 = arr1
+    ref2 = arr2
+    res = res + test4_compare(ref1, arr2)
+    res = res + test4_compare(ref2, arr1)
     return res
 }

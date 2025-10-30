@@ -1,9 +1,9 @@
+// Helper function for addition
 int64 test3add(int64 a, int64 b){
   return a + b
 }
 
-
-
+// Test nested while loops with array access
 int64 test3(int64[5] vec, int64 len){
   int64 sum, i, j
   sum = 0
@@ -19,12 +19,14 @@ int64 test3(int64[5] vec, int64 len){
   return sum
 }
 
+// Return array by value
 int64[5] av(){
   int64[5] ret
   ret = [1; 5]
   return ret
 }
 
+// Test array reference semantics
 int64 refs(){
   int64[5] x
   int64[5]& y

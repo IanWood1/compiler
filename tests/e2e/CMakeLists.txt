@@ -24,3 +24,27 @@ add_e2e_tests(
   test3.cpp
   test3.program
 )
+
+add_e2e_tests(
+  test4
+  test4.cpp
+  test4.program
+)
+
+add_e2e_tests(
+  test_controlflow
+  test_controlflow.cpp
+  test_controlflow.program
+)
+
+add_e2e_tests(
+  test_operators
+  test_operators.cpp
+  test_operators.program
+)
+
+add_e2e_tests(
+  test_arrays
+  test_arrays.cpp
+  test_arrays.program
+)
