@@ -1,24 +1,26 @@
-
-# Add source to this project's executable.
+# Frontend library modules
 add_subdirectory(frontend)
+
+# Compiler executable
 add_executable(${PROJECT_NAME} compiler.cpp)
 
-llvm_map_components_to_libnames(llvm_libs support core irreader)
+# Set C++ standard (already set globally in root CMakeLists.txt)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-# Link against LLVM libraries
-target_link_libraries(compiler
+# Compiler flags
+target_compile_options(${PROJECT_NAME} PRIVATE
+  -Werror
+  -Wall
+  -Wextra
+  -Wpedantic
+)
+
+# Link against frontend libraries and LLVM
+target_link_libraries(${PROJECT_NAME} PRIVATE
   frontend_parse
   frontend_visitor
   frontend_ast
   frontend_codegen
   frontend_types
-
   LLVM
 )
-
-# Find the libraries that correspond to the LLVM components
-# that we wish to use
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET compiler PROPERTY CXX_STANDARD 20)
-endif ()

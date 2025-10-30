@@ -1,3 +1,4 @@
+# E2E test with multiple test programs in one executable
 add_e2e_tests(
   minitests
   minitests.cpp
@@ -5,46 +6,24 @@ add_e2e_tests(
   test2.program
   test3.program
   test4.program
-  minitests.program)
+  minitests.program
+)
 
-add_e2e_tests(
+# Individual E2E tests - each test has its own executable and .program file
+set(INDIVIDUAL_TESTS
   test1
-  test1.cpp
-  test1.program
-)
-
-add_e2e_tests(
   test2
-  test2.cpp
-  test2.program
-)
-
-add_e2e_tests(
   test3
-  test3.cpp
-  test3.program
-)
-
-add_e2e_tests(
   test4
-  test4.cpp
-  test4.program
-)
-
-add_e2e_tests(
   test_controlflow
-  test_controlflow.cpp
-  test_controlflow.program
-)
-
-add_e2e_tests(
   test_operators
-  test_operators.cpp
-  test_operators.program
+  test_arrays
 )
 
-add_e2e_tests(
-  test_arrays
-  test_arrays.cpp
-  test_arrays.program
-)
+foreach(test_name IN LISTS INDIVIDUAL_TESTS)
+  add_e2e_tests(
+    ${test_name}
+    ${test_name}.cpp
+    ${test_name}.program
+  )
+endforeach()
