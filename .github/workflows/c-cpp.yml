@@ -28,7 +28,7 @@ jobs:
     - name: Set up dependencies
       run: |
         sudo apt update
-        sudo apt install llvm-15-dev ninja-build cmake clang -y
+        sudo apt install llvm-17-dev ninja-build cmake clang -y
 
 
     - name: Build
